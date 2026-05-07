@@ -24,7 +24,7 @@ Plataformero 2D hecho en **Godot 4.6** donde controlas a **Mag-Boy**, un persona
 - **GPU:** cualquier tarjeta compatible con OpenGL 3.3 / Direct3D 12 (el proyecto usa el renderer *GL Compatibility*).
 - ~150 MB libres en disco (Godot + proyecto).
 
-> No necesitas .NET / Mono. El proyecto está escrito en **GDScript**, así que basta con la versión estándar de Godot.
+> No necesitas actualmente .NET / Mono. El proyecto está escrito en **GDScript**, así que basta con la versión estándar de Godot.
 
 ---
 
