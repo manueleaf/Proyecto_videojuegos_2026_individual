@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://bwcnaqdf0jv41"]
+
+[ext_resource type="Script" uid="uid://baf1vh5u7gls7" path="res://scripts/Player.gd" id="1_player"]
+
+[sub_resource type="RectangleShape2D" id="PlayerBodyShape"]
+size = Vector2(28, 44)
+
+[sub_resource type="CircleShape2D" id="MagnetAreaShape"]
+radius = 220.0
+
+[node name="Player" type="CharacterBody2D" unique_id=1190399609]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1457624391]
+shape = SubResource("PlayerBodyShape")
+
+[node name="Sprite" type="Polygon2D" parent="." unique_id=1960109778]
+color = Color(0.4, 0.45, 0.55, 1)
+polygon = PackedVector2Array(-14, -22, 14, -22, 14, 22, -14, 22)
+
+[node name="Core" type="Polygon2D" parent="." unique_id=1964363136]
+color = Color(0.9, 0.9, 0.4, 1)
+polygon = PackedVector2Array(-5, -8, 5, -8, 5, 2, -5, 2)
+
+[node name="MagnetArea" type="Area2D" parent="." unique_id=1618291990]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MagnetArea" unique_id=1268624789]
+shape = SubResource("MagnetAreaShape")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1330124615]
+zoom = Vector2(1.1, 1.1)
+position_smoothing_enabled = true
+position_smoothing_speed = 6.0
