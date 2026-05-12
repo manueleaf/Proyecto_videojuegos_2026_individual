@@ -13,7 +13,9 @@ Plataformero 2D hecho en **Godot 4.6** donde controlas a **Mag-Boy**, un persona
 - [Cómo ejecutar el proyecto](#cómo-ejecutar-el-proyecto)
 - [Controles](#controles)
 - [Funciones actuales](#funciones-actuales)
+- [Nivel 1 — puzzles](#nivel-1--puzzles)
 - [Estructura del proyecto](#estructura-del-proyecto)
+- [Hoja de ruta (entregables)](#hoja-de-ruta-entregables)
 
 ---
 
@@ -63,7 +65,7 @@ Plataformero 2D hecho en **Godot 4.6** donde controlas a **Mag-Boy**, un persona
 
 2. **Abre Godot.** En el *Project Manager* haz clic en **Import**.
 3. Navega hasta la carpeta `magnet-o/` que clonaste y selecciona el archivo `project.godot`. Luego pulsa **Import & Edit**.
-4. Una vez cargado el editor, presiona **F5** (o el botón ▶ "Play" arriba a la derecha) para ejecutar el juego. La escena principal `scenes/TestLevel.tscn` ya está configurada como entry point.
+4. Una vez cargado el editor, presiona **F5** (o el botón ▶ "Play" arriba a la derecha) para ejecutar el juego. La escena principal `scenes/Level1.tscn` ya está configurada como entry point. La escena de pruebas `scenes/TestLevel.tscn` sigue disponible como sandbox.
 5. Para correr una escena específica que tengas abierta, usa **F6**.
 
 > La primera vez Godot importará los recursos y compilará shaders; puede tardar unos segundos. La carpeta `.godot/` que aparece se genera localmente y está ignorada por git.
@@ -99,24 +101,64 @@ El núcleo del personaje cambia de color según la polaridad activa: amarillo (n
   - `Shift` cicla entre todas las cajas en rango si hay varias.
   - Si la caja seleccionada sale del área, se deselecciona sola.
 - **Polaridad REPELER (roja):** empuja **todas** las cajas dentro del área simultáneamente (útil para apartar varios objetos a la vez o lanzarlos).
-- **Fuerza configurable** (`magnet_force = 1500`) con curva de caída opcional según distancia (`magnet_falloff`, lerp entre fuerza constante y decaimiento lineal).
+- **Fuerza ajustada para los puzzles:** `magnet_force = 1800`, `magnet_falloff = 0.35`. Con la gravedad del proyecto (`980`) y caja `mass = 1`, esto da una fuerza neta hacia el imán de **+820** unidades al estar pegado y **+190** unidades al borde del radio — la caja se puede elevar en todo el alcance. Ambos parámetros siguen siendo `@export`, así que se afinan desde el inspector.
 - Modo de depuración: `debug_magnetism` imprime distancias y fuerzas aplicadas en consola.
+
+### Botones (pressure plates)
+- `Area2D` que detecta cuando un cuerpo (jugador y/o caja metálica) se posa encima.
+- Cambia de **rojo apagado** a **verde brillante** mientras está presionado.
+- Bandera `requires_metal_box` para botones que **solo** aceptan cajas (forza al jugador a usar magnetismo en lugar de pisarlos).
+- Notifica a un nodo destino (`target_path`) llamando `on_button_pressed()` / `on_button_released()`, o emite las señales `pressed` / `released` para conectarlas desde el editor.
+
+### Puertas
+- `StaticBody2D` con colisión que se activa/desactiva al instante.
+- Parámetro `required_presses` (1 a 4): la puerta solo se abre cuando ese número de botones vinculados está presionado al mismo tiempo. Permite armar compuertas lógicas tipo **AND** con varios botones.
+- `auto_close` controla si vuelve a cerrarse al perder presión (apagado en el Nivel 1 para que los puzzles avancen sin penalizar el regreso).
+- Visual: opaca cuando está cerrada, traslúcida cuando está abierta.
+
+### Zona de meta
+- `Area2D` (`Goal`) que detecta al jugador (vía el grupo `player`, añadido automáticamente en `Player._ready`).
+- Al activarse muestra una etiqueta de HUD configurable (`hud_label_path`) y emite la señal `reached` para poder encadenar lógica futura (cargar siguiente nivel, mostrar tiempo, etc.).
 
 ### Cajas metálicas
 - `RigidBody2D` con física Jolt habilitada.
 - Estado visual: la marca interior se ilumina en azul claro cuando la caja está **seleccionada** para ser atraída.
 - Agregadas al grupo `metal_box` para futuras consultas globales.
 
+### Nivel 1 (`Level1.tscn`, escena principal)
+- Recorrido lineal con dos puertas que requieren resolver puzzles para abrirse.
+- HUD permanente con controles + pistas por puzzle + banner "¡NIVEL COMPLETADO!" al llegar a la meta.
+- Cámara que sigue al jugador con `position_smoothing` para que el scroll lateral sea suave.
+
 ### Nivel de prueba (`TestLevel.tscn`)
 - Suelo, paredes laterales y 3 plataformas estáticas (`StaticBody2D`).
 - 5 cajas metálicas distribuidas para experimentar con atraer/repeler.
-- HUD superior con la lista de controles siempre visible.
-- Resolución base **1280×720** con stretch `canvas_items` (escala manteniendo aspecto).
+- Se mantiene como **sandbox** para iterar mecánicas sin afectar el flujo del nivel principal.
 
 ### Configuración técnica
+- Resolución base **1280×720** con stretch `canvas_items` (escala manteniendo aspecto).
 - Renderer: **GL Compatibility** (compatible con hardware antiguo y web).
 - Físicas 3D: **Jolt Physics** (aunque el juego es 2D actualmente).
-- Capas de física: `World` (1), `MetalBox` (2), `Player` (3).
+- Capas de física: `World` (1), `MetalBox` (2), `Player` (3). Los botones detectan máscara `6` (capas 2 + 3); la meta detecta solo al jugador (máscara `4`).
+
+---
+
+## Nivel 1 — puzzles
+
+El nivel se atraviesa de izquierda a derecha y combina dos retos:
+
+### Puzzle 1 · La caja sobre el botón
+1. Cerca del spawn hay una **caja metálica** y un **botón rojo** que solo acepta cajas.
+2. Mantén **J** (o clic izquierdo) cerca de la caja para atraerla y arrástrala sobre el botón.
+3. La puerta morada se vuelve translúcida y permite pasar a la siguiente sala.
+
+### Puzzle 2 · Dos botones simultáneos
+1. En la segunda sala hay **dos botones** conectados a la misma puerta (`required_presses = 2`).
+2. Uno está en el suelo (lo activa el jugador o una caja); el otro está sobre una **plataforma elevada** y solo lo activan cajas.
+3. Atrae la caja a la plataforma, suelta la atracción para que caiga sobre el botón y luego camina hasta el botón del suelo. Mientras los dos sigan presionados, la segunda puerta queda abierta.
+
+### Meta
+- Cruzar la segunda puerta y tocar el **estandarte verde** dispara el cartel "¡NIVEL COMPLETADO!".
 
 ---
 
@@ -127,10 +169,28 @@ magnet-o/
 ├── project.godot          # Configuración del proyecto Godot
 ├── icon.svg               # Ícono de la app
 ├── scenes/
-│   ├── TestLevel.tscn     # Escena principal (nivel de prueba)
+│   ├── Level1.tscn        # Nivel principal (puzzles de botones + meta)
+│   ├── TestLevel.tscn     # Sandbox de mecánicas
 │   ├── Player.tscn        # Mag-Boy (CharacterBody2D + área magnética)
-│   └── MetalBox.tscn      # Caja metálica (RigidBody2D)
+│   ├── MetalBox.tscn      # Caja metálica (RigidBody2D)
+│   ├── Button.tscn        # Botón de presión (Area2D)
+│   ├── Door.tscn          # Puerta vinculada a botones (StaticBody2D)
+│   └── Goal.tscn          # Zona de meta (Area2D)
 └── scripts/
-    ├── Player.gd          # Lógica de movimiento y magnetismo
-    └── MetalBox.gd        # Estado visual y selección de caja
+    ├── Player.gd          # Movimiento, magnetismo y selección de cajas
+    ├── MetalBox.gd        # Estado visual y selección de la caja
+    ├── Button.gd          # Detección de presión y notificación al target
+    ├── Door.gd            # Lógica AND de botones (required_presses)
+    └── Goal.gd            # Trigger de fin de nivel
 ```
+
+---
+
+## Hoja de ruta (entregables)
+
+| Entregable | Estado | Contenido |
+|------------|--------|-----------|
+| 1 · Prototipo de mecánica | ✅ | Movimiento de plataforma + magnetismo con polaridad dual. |
+| 2 · Cajas e interacción | ✅ | `MetalBox` con selección y ciclo de objetivo (`Shift`). |
+| **3 · Nivel y enemigos** *(12/05/2026)* | 🟡 *en curso* | Hecho: botones, puertas con lógica AND, zona de meta, Nivel 1 jugable de principio a fin con 2 puzzles encadenados. Pendiente: enemigo básico con patrullaje + daño y migración del escenario a Tilemap. |
+| 4 · Arte final + audio | 🔜 | Sustituir polígonos por sprites, añadir SFX y música. |

@@ -1,0 +1,148 @@
+[gd_scene load_steps=9 format=3 uid="uid://lv1magneto001"]
+
+[ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://scenes/MetalBox.tscn" id="2_box"]
+[ext_resource type="PackedScene" path="res://scenes/Button.tscn" id="3_btn"]
+[ext_resource type="PackedScene" path="res://scenes/Door.tscn" id="4_door"]
+[ext_resource type="PackedScene" path="res://scenes/Goal.tscn" id="5_goal"]
+
+[sub_resource type="RectangleShape2D" id="GroundShape"]
+size = Vector2(2400, 60)
+
+[sub_resource type="RectangleShape2D" id="WallShape"]
+size = Vector2(60, 800)
+
+[sub_resource type="RectangleShape2D" id="SmallPlatformShape"]
+size = Vector2(100, 20)
+
+[node name="Level1" type="Node2D"]
+
+[node name="Background" type="Polygon2D" parent="."]
+color = Color(0.1, 0.12, 0.18, 1)
+polygon = PackedVector2Array(-1200, -500, 1200, -500, 1200, 500, -1200, 500)
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(0, 360)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("GroundShape")
+
+[node name="Visual" type="Polygon2D" parent="Ground"]
+color = Color(0.28, 0.3, 0.35, 1)
+polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, 30, -1200, 30)
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+position = Vector2(-1170, 0)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("WallShape")
+
+[node name="Visual" type="Polygon2D" parent="LeftWall"]
+color = Color(0.28, 0.3, 0.35, 1)
+polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+position = Vector2(1170, 0)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("WallShape")
+
+[node name="Visual" type="Polygon2D" parent="RightWall"]
+color = Color(0.28, 0.3, 0.35, 1)
+polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
+
+[node name="SmallPlatform" type="StaticBody2D" parent="."]
+position = Vector2(350, 290)
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SmallPlatform"]
+shape = SubResource("SmallPlatformShape")
+
+[node name="Visual" type="Polygon2D" parent="SmallPlatform"]
+color = Color(0.35, 0.38, 0.45, 1)
+polygon = PackedVector2Array(-50, -10, 50, -10, 50, 10, -50, 10)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Controls" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 620.0
+offset_bottom = 160.0
+theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
+text = "MAGNET-O  -  Nivel 1
+A / D  o  Flechas        Mover                Espacio / W / Up       Saltar
+J  o  Clic Izquierdo     Polaridad AZUL (atraer caja seleccionada)
+K  o  Clic Derecho       Polaridad ROJA (repeler todas en rango)
+Shift (atrayendo)        Cambiar de caja objetivo"
+
+[node name="Hint1" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 175.0
+offset_right = 720.0
+offset_bottom = 200.0
+theme_override_colors/font_color = Color(0.95, 0.85, 0.55, 1)
+text = "Puzzle 1: coloca la caja sobre el boton rojo para abrir la primera puerta."
+
+[node name="Hint2" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 200.0
+offset_right = 760.0
+offset_bottom = 225.0
+theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1)
+text = "Puzzle 2: la segunda puerta necesita dos botones presionados al mismo tiempo."
+
+[node name="Victory" type="Label" parent="HUD"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -40.0
+offset_right = 220.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.95, 0.95, 0.2, 1)
+theme_override_font_sizes/font_size = 36
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "¡NIVEL COMPLETADO!"
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(-1000, 240)
+
+[node name="Box1" parent="." instance=ExtResource("2_box")]
+position = Vector2(-700, 310)
+
+[node name="Button1" parent="." instance=ExtResource("3_btn")]
+position = Vector2(-450, 330)
+target_path = NodePath("../Door1")
+requires_metal_box = true
+
+[node name="Door1" parent="." instance=ExtResource("4_door")]
+position = Vector2(-370, 280)
+auto_close = false
+
+[node name="Box2" parent="." instance=ExtResource("2_box")]
+position = Vector2(-150, 310)
+
+[node name="Button2a" parent="." instance=ExtResource("3_btn")]
+position = Vector2(50, 330)
+target_path = NodePath("../Door2")
+
+[node name="Button2b" parent="." instance=ExtResource("3_btn")]
+position = Vector2(350, 280)
+target_path = NodePath("../Door2")
+requires_metal_box = true
+
+[node name="Door2" parent="." instance=ExtResource("4_door")]
+position = Vector2(600, 280)
+auto_close = false
+required_presses = 2
+
+[node name="Goal" parent="." instance=ExtResource("5_goal")]
+position = Vector2(1000, 280)
+hud_label_path = NodePath("../HUD/Victory")

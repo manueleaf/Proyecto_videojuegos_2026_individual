@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://glmagneto001x"]
+
+[ext_resource type="Script" path="res://scripts/Goal.gd" id="1_goal"]
+
+[sub_resource type="RectangleShape2D" id="GoalShape"]
+size = Vector2(60, 100)
+
+[node name="Goal" type="Area2D"]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_goal")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("GoalShape")
+
+[node name="Flag" type="Polygon2D" parent="."]
+color = Color(0.95, 0.85, 0.2, 1)
+polygon = PackedVector2Array(-2, -50, 2, -50, 2, 50, -2, 50)
+
+[node name="Banner" type="Polygon2D" parent="."]
+color = Color(0.2, 0.8, 0.4, 1)
+polygon = PackedVector2Array(2, -50, 28, -45, 28, -25, 2, -20)

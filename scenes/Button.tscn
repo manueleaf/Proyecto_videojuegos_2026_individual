@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://btnmagneto001"]
+
+[ext_resource type="Script" path="res://scripts/Button.gd" id="1_btn"]
+
+[sub_resource type="RectangleShape2D" id="BtnDetectShape"]
+size = Vector2(60, 30)
+
+[node name="Button" type="Area2D"]
+collision_layer = 0
+collision_mask = 6
+script = ExtResource("1_btn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -15)
+shape = SubResource("BtnDetectShape")
+
+[node name="Base" type="Polygon2D" parent="."]
+color = Color(0.18, 0.18, 0.22, 1)
+polygon = PackedVector2Array(-35, -2, 35, -2, 35, 4, -35, 4)
+
+[node name="Cap" type="Polygon2D" parent="."]
+color = Color(0.85, 0.25, 0.25, 1)
+polygon = PackedVector2Array(-30, -8, 30, -8, 30, -2, -30, -2)

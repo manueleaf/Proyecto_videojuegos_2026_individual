@@ -10,8 +10,8 @@ extends CharacterBody2D
 @export var air_control: float = 0.6
 
 # Magnetismo
-@export var magnet_force: float = 1500.0
-@export var magnet_falloff: float = 0.4  # 0 = fuerza constante, 1 = decae linealmente con distancia
+@export var magnet_force: float = 1800.0
+@export var magnet_falloff: float = 0.35  # 0 = fuerza constante, 1 = decae linealmente con distancia
 @export var debug_magnetism: bool = false
 
 enum Polarity { NONE, ATTRACT, REPEL }
@@ -23,6 +23,11 @@ var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 @onready var magnet_area: Area2D = $MagnetArea
 @onready var sprite: Polygon2D = $Sprite
 @onready var core: Polygon2D = $Core
+
+
+func _ready() -> void:
+	add_to_group("player")
+
 
 func _physics_process(delta: float) -> void:
 	_handle_gravity(delta)
