@@ -14,6 +14,7 @@ Plataformero 2D hecho en **Godot 4.6** donde controlas a **Mag-Boy**, un persona
 - [Controles](#controles)
 - [Funciones actuales](#funciones-actuales)
 - [Nivel 1 — puzzles](#nivel-1--puzzles)
+- [Enemigos](#enemigos)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Hoja de ruta (entregables)](#hoja-de-ruta-entregables)
 
@@ -120,6 +121,17 @@ El núcleo del personaje cambia de color según la polaridad activa: amarillo (n
 - `Area2D` (`Goal`) que detecta al jugador (vía el grupo `player`, añadido automáticamente en `Player._ready`).
 - Al activarse muestra una etiqueta de HUD configurable (`hud_label_path`) y emite la señal `reached` para poder encadenar lógica futura (cargar siguiente nivel, mostrar tiempo, etc.).
 
+### Enemigo patrullero
+- `CharacterBody2D` que se mueve a la izquierda/derecha desde su punto de aparición hasta `patrol_distance` y rebota; también invierte dirección al chocar con una pared.
+- Capa de física propia (`Enemy`, capa 4): no colisiona físicamente con el jugador ni con las cajas, pero sí con el suelo y paredes. La detección de impactos va por un `Area2D` (`HitArea`).
+- **Condición de daño al jugador:** al entrar en contacto, llama `Player.respawn()` → el jugador vuelve a su posición inicial con velocidad y polaridad reseteadas.
+- **Condición de muerte del enemigo:** muere si una `MetalBox` lo impacta con `linear_velocity.length() >= box_kill_speed` (250 por defecto). Esto se logra fácilmente con la polaridad **roja** (repulsión) — el imán convierte la caja en un proyectil.
+- Modo `debug_enemy` imprime cada respawn y velocidad de impacto en consola.
+
+### Respawn del jugador
+- `Player._spawn_position` se guarda al inicio del nivel (en `_ready`).
+- `Player.respawn()` reposiciona, anula `velocity` y limpia la caja seleccionada / polaridad activa. Disponible para cualquier sistema que necesite "matar" al jugador (enemigo, hazards, caídas, etc.).
+
 ### Cajas metálicas
 - `RigidBody2D` con física Jolt habilitada.
 - Estado visual: la marca interior se ilumina en azul claro cuando la caja está **seleccionada** para ser atraída.
@@ -160,6 +172,16 @@ El nivel se atraviesa de izquierda a derecha y combina dos retos:
 ### Meta
 - Cruzar la segunda puerta y tocar el **estandarte verde** dispara el cartel "¡NIVEL COMPLETADO!".
 
+> Hay un **enemigo rojo patrullando** la sala 2. Si te toca, vuelves al spawn (las puertas ya abiertas siguen abiertas porque `auto_close = false`). Para eliminarlo, repele una caja contra él.
+
+---
+
+## Enemigos
+
+- **Patrullero (`Enemy.tscn`)**: se mueve horizontalmente alrededor de su spawn (`patrol_distance` configurable). El impacto con el jugador lo respawnea; muere si lo golpea una caja a más de `box_kill_speed` (250 px/s por defecto).
+- **Capa de física `Enemy` (4)**: separada de Player (3) y MetalBox (2) para evitar enganches físicos. Toda la interacción pasa por su `HitArea`.
+- Forma sencilla de derrotarlo en el Nivel 1: párate cerca de una caja, mantén **K** (repulsión) apuntando hacia el enemigo — la caja sale disparada y supera el umbral de velocidad.
+
 ---
 
 ## Estructura del proyecto
@@ -175,13 +197,15 @@ magnet-o/
 │   ├── MetalBox.tscn      # Caja metálica (RigidBody2D)
 │   ├── Button.tscn        # Botón de presión (Area2D)
 │   ├── Door.tscn          # Puerta vinculada a botones (StaticBody2D)
-│   └── Goal.tscn          # Zona de meta (Area2D)
+│   ├── Goal.tscn          # Zona de meta (Area2D)
+│   └── Enemy.tscn         # Patrullero (CharacterBody2D + HitArea)
 └── scripts/
-    ├── Player.gd          # Movimiento, magnetismo y selección de cajas
+    ├── Player.gd          # Movimiento, magnetismo, respawn y selección
     ├── MetalBox.gd        # Estado visual y selección de la caja
     ├── Button.gd          # Detección de presión y notificación al target
     ├── Door.gd            # Lógica AND de botones (required_presses)
-    └── Goal.gd            # Trigger de fin de nivel
+    ├── Goal.gd            # Trigger de fin de nivel
+    └── Enemy.gd           # Patrullaje + daño al jugador + muerte por caja
 ```
 
 ---
@@ -192,5 +216,5 @@ magnet-o/
 |------------|--------|-----------|
 | 1 · Prototipo de mecánica | ✅ | Movimiento de plataforma + magnetismo con polaridad dual. |
 | 2 · Cajas e interacción | ✅ | `MetalBox` con selección y ciclo de objetivo (`Shift`). |
-| **3 · Nivel y enemigos** *(12/05/2026)* | 🟡 *en curso* | Hecho: botones, puertas con lógica AND, zona de meta, Nivel 1 jugable de principio a fin con 2 puzzles encadenados. Pendiente: enemigo básico con patrullaje + daño y migración del escenario a Tilemap. |
+| **3 · Nivel y enemigos** *(12/05/2026)* | 🟢 *funcional* | Botones, puertas con lógica AND, zona de meta, enemigo patrullero con daño + condición de muerte por caja, respawn del jugador, Nivel 1 jugable de inicio a fin. Pendiente "nice to have": migrar el escenario a Tilemap. |
 | 4 · Arte final + audio | 🔜 | Sustituir polígonos por sprites, añadir SFX y música. |

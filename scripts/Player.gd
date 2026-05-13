@@ -24,9 +24,20 @@ var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 @onready var sprite: Polygon2D = $Sprite
 @onready var core: Polygon2D = $Core
 
+var _spawn_position: Vector2
+
 
 func _ready() -> void:
 	add_to_group("player")
+	_spawn_position = global_position
+
+
+func respawn() -> void:
+	## Devuelve al jugador al punto de aparición y limpia su estado magnético.
+	global_position = _spawn_position
+	velocity = Vector2.ZERO
+	current_polarity = Polarity.NONE
+	_set_selected_box(null)
 
 
 func _physics_process(delta: float) -> void:

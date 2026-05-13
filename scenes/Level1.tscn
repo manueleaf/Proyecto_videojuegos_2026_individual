@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://lv1magneto001"]
+[gd_scene load_steps=10 format=3 uid="uid://lv1magneto001"]
 
 [ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/MetalBox.tscn" id="2_box"]
 [ext_resource type="PackedScene" path="res://scenes/Button.tscn" id="3_btn"]
 [ext_resource type="PackedScene" path="res://scenes/Door.tscn" id="4_door"]
 [ext_resource type="PackedScene" path="res://scenes/Goal.tscn" id="5_goal"]
+[ext_resource type="PackedScene" path="res://scenes/Enemy.tscn" id="6_enemy"]
 
 [sub_resource type="RectangleShape2D" id="GroundShape"]
 size = Vector2(2400, 60)
@@ -95,6 +96,14 @@ offset_bottom = 225.0
 theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1)
 text = "Puzzle 2: la segunda puerta necesita dos botones presionados al mismo tiempo."
 
+[node name="Hint3" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 225.0
+offset_right = 820.0
+offset_bottom = 250.0
+theme_override_colors/font_color = Color(1.0, 0.6, 0.6, 1)
+text = "Cuidado: hay un enemigo patrullando. Esquívalo o lánzale una caja (repele con K) para eliminarlo."
+
 [node name="Victory" type="Label" parent="HUD"]
 visible = false
 anchor_left = 0.5
@@ -142,6 +151,10 @@ requires_metal_box = true
 position = Vector2(600, 280)
 auto_close = false
 required_presses = 2
+
+[node name="Enemy" parent="." instance=ExtResource("6_enemy")]
+position = Vector2(350, 270)
+patrol_distance = 180.0
 
 [node name="Goal" parent="." instance=ExtResource("5_goal")]
 position = Vector2(1000, 280)
