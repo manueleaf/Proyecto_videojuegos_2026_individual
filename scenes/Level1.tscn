@@ -1,5 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://lv1magneto001"]
+[gd_scene load_steps=11 format=3 uid="uid://lv1magneto001"]
 
+[ext_resource type="Script" path="res://scripts/Level.gd" id="0_level"]
 [ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/MetalBox.tscn" id="2_box"]
 [ext_resource type="PackedScene" path="res://scenes/Button.tscn" id="3_btn"]
@@ -17,6 +18,7 @@ size = Vector2(60, 800)
 size = Vector2(100, 20)
 
 [node name="Level1" type="Node2D"]
+script = ExtResource("0_level")
 
 [node name="Background" type="Polygon2D" parent="."]
 color = Color(0.1, 0.12, 0.18, 1)
@@ -136,7 +138,10 @@ position = Vector2(-370, 280)
 auto_close = false
 
 [node name="Box2" parent="." instance=ExtResource("2_box")]
-position = Vector2(-150, 310)
+position = Vector2(150, 310)
+
+[node name="Box3" parent="." instance=ExtResource("2_box")]
+position = Vector2(250, 310)
 
 [node name="Button2a" parent="." instance=ExtResource("3_btn")]
 position = Vector2(50, 330)
@@ -153,8 +158,8 @@ auto_close = false
 required_presses = 2
 
 [node name="Enemy" parent="." instance=ExtResource("6_enemy")]
-position = Vector2(350, 270)
-patrol_distance = 180.0
+position = Vector2(490, 270)
+patrol_distance = 90.0
 
 [node name="Goal" parent="." instance=ExtResource("5_goal")]
 position = Vector2(1000, 280)

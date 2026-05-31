@@ -1,6 +1,7 @@
-[gd_scene format=3 uid="uid://bwcnaqdf0jv41"]
+[gd_scene load_steps=5 format=3 uid="uid://bwcnaqdf0jv41"]
 
 [ext_resource type="Script" uid="uid://baf1vh5u7gls7" path="res://scripts/Player.gd" id="1_player"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player.png" id="2_tex"]
 
 [sub_resource type="RectangleShape2D" id="PlayerBodyShape"]
 size = Vector2(28, 44)
@@ -16,9 +17,8 @@ script = ExtResource("1_player")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1457624391]
 shape = SubResource("PlayerBodyShape")
 
-[node name="Sprite" type="Polygon2D" parent="." unique_id=1960109778]
-color = Color(0.4, 0.45, 0.55, 1)
-polygon = PackedVector2Array(-14, -22, 14, -22, 14, 22, -14, 22)
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1960109778]
+texture = ExtResource("2_tex")
 
 [node name="Core" type="Polygon2D" parent="." unique_id=1964363136]
 color = Color(0.9, 0.9, 0.4, 1)

@@ -21,7 +21,7 @@ var selected_box: RigidBody2D = null  # Caja actualmente atraida
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 @onready var magnet_area: Area2D = $MagnetArea
-@onready var sprite: Polygon2D = $Sprite
+@onready var sprite: Sprite2D = $Sprite
 @onready var core: Polygon2D = $Core
 
 var _spawn_position: Vector2
@@ -38,6 +38,7 @@ func respawn() -> void:
 	velocity = Vector2.ZERO
 	current_polarity = Polarity.NONE
 	_set_selected_box(null)
+	Audio.set_magnet_active(false)
 
 
 func _physics_process(delta: float) -> void:
@@ -59,6 +60,7 @@ func _handle_gravity(delta: float) -> void:
 func _handle_jump() -> void:
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = jump_velocity
+		Audio.play_sfx("jump")
 
 
 func _handle_horizontal_movement(delta: float) -> void:
@@ -78,6 +80,7 @@ func _handle_polarity_input() -> void:
 		current_polarity = Polarity.REPEL
 	else:
 		current_polarity = Polarity.NONE
+	Audio.set_magnet_active(current_polarity != Polarity.NONE)
 
 
 func _update_target_selection() -> void:

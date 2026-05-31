@@ -15,6 +15,12 @@ Plataformero 2D hecho en **Godot 4.6** donde controlas a **Mag-Boy**, un persona
 - [Funciones actuales](#funciones-actuales)
 - [Nivel 1 — puzzles](#nivel-1--puzzles)
 - [Enemigos](#enemigos)
+- [Audio](#audio)
+- [Arte temporal (sprites)](#arte-temporal-sprites)
+- [Menú y flujo](#menú-y-flujo)
+- [Overlay de rendimiento (F3)](#overlay-de-rendimiento-f3)
+- [Exportar a ejecutable](#exportar-a-ejecutable)
+- [Métricas técnicas (slides)](#métricas-técnicas-slides)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Hoja de ruta (entregables)](#hoja-de-ruta-entregables)
 
@@ -66,7 +72,7 @@ Plataformero 2D hecho en **Godot 4.6** donde controlas a **Mag-Boy**, un persona
 
 2. **Abre Godot.** En el *Project Manager* haz clic en **Import**.
 3. Navega hasta la carpeta `magnet-o/` que clonaste y selecciona el archivo `project.godot`. Luego pulsa **Import & Edit**.
-4. Una vez cargado el editor, presiona **F5** (o el botón ▶ "Play" arriba a la derecha) para ejecutar el juego. La escena principal `scenes/Level1.tscn` ya está configurada como entry point. La escena de pruebas `scenes/TestLevel.tscn` sigue disponible como sandbox.
+4. Una vez cargado el editor, presiona **F5** (o el botón ▶ "Play" arriba a la derecha) para ejecutar el juego. La escena principal es `scenes/MainMenu.tscn` (el menú); desde **Jugar** se carga `scenes/Level1.tscn`. La escena de pruebas `scenes/TestLevel.tscn` sigue disponible como sandbox.
 5. Para correr una escena específica que tengas abierta, usa **F6**.
 
 > La primera vez Godot importará los recursos y compilará shaders; puede tardar unos segundos. La carpeta `.godot/` que aparece se genera localmente y está ignorada por git.
@@ -83,6 +89,9 @@ Plataformero 2D hecho en **Godot 4.6** donde controlas a **Mag-Boy**, un persona
 | Polaridad **azul** (atraer)           | `J` o **clic izquierdo** (mantener)   |
 | Polaridad **roja** (repeler)          | `K` o **clic derecho** (mantener)     |
 | Cambiar de caja seleccionada (mientras atraes) | `Shift`                      |
+| Métricas de rendimiento (overlay)     | `F3`                                  |
+| Reiniciar nivel                       | `R`                                   |
+| Volver al menú principal              | `Esc`                                 |
 
 El núcleo del personaje cambia de color según la polaridad activa: amarillo (neutro), azul (atraer), rojo (repeler).
 
@@ -133,8 +142,8 @@ El núcleo del personaje cambia de color según la polaridad activa: amarillo (n
 - `Player.respawn()` reposiciona, anula `velocity` y limpia la caja seleccionada / polaridad activa. Disponible para cualquier sistema que necesite "matar" al jugador (enemigo, hazards, caídas, etc.).
 
 ### Cajas metálicas
-- `RigidBody2D` con física Jolt habilitada.
-- Estado visual: la marca interior se ilumina en azul claro cuando la caja está **seleccionada** para ser atraída.
+- `RigidBody2D` (física 2D: `mass = 1`, amortiguación lineal/angular) manipulable por el imán.
+- El sprite recibe un **tinte azul** (`modulate`) cuando la caja está **seleccionada** para ser atraída.
 - Agregadas al grupo `metal_box` para futuras consultas globales.
 
 ### Nivel 1 (`Level1.tscn`, escena principal)
@@ -184,28 +193,93 @@ El nivel se atraviesa de izquierda a derecha y combina dos retos:
 
 ---
 
+## Audio
+
+- **Autoload `Audio`** (`scripts/AudioManager.gd`): pool de reproductores para SFX, un canal para la música y otro para el zumbido del imán. Sigue sonando durante la pausa.
+- **SFX:** `jump.wav` (salto) y `magnet.wav` (zumbido en bucle mientras hay polaridad activa).
+- **Música:** `music.wav` en bucle; arranca en el menú y en el nivel.
+- Los `.wav` son **placeholder sintetizados** (ver `tools/gen_assets.py`), pensados para reemplazarse por audio final sin tocar código: basta sustituir los archivos en `assets/audio/`.
+
+---
+
+## Arte temporal (sprites)
+
+- Sprites estilo **pixel-art** generados por código en `assets/sprites/` (`player.png`, `box.png`, `enemy.png`).
+- Se cargan mediante `Sprite2D` en sus escenas; el núcleo del jugador sigue marcando la polaridad por color y la caja seleccionada se resalta con un **tinte azul**.
+- El **escenario** (suelo, paredes, plataformas) sigue siendo geometría con `Polygon2D` — la migración a Tilemap queda pendiente.
+- Reproducibles/editables con `python3 tools/gen_assets.py` (requiere `pillow` y `numpy`). Es arte **temporal**: reemplazar los PNG por el pixel-art final no requiere tocar código.
+
+---
+
+## Menú y flujo
+
+- **`MainMenu.tscn`** es la escena principal: botones **Jugar** y **Salir** (`scripts/MainMenu.gd`).
+- Dentro del nivel (`scripts/Level.gd`): **R** reinicia el nivel y **Esc** vuelve al menú.
+
+---
+
+## Overlay de rendimiento (F3)
+
+- **Autoload `PerfOverlay`** (`scripts/PerfOverlay.gd`): pulsa **F3** en cualquier momento para mostrar **FPS, ms por frame, tiempo de CPU/física, RAM estática, VRAM y draw calls** (vía la API `Performance` de Godot).
+- Es la herramienta para capturar los datos técnicos del informe del profesor.
+
+---
+
+## Exportar a ejecutable
+
+Para generar el binario (MVP) que evaluará el profesor:
+
+1. En Godot: **Editor → Manage Export Templates… → Download and Install** (solo la primera vez).
+2. **Project → Export…** y añade un preset:
+   - **Windows Desktop** → genera `Magnet-o.exe`.
+   - **macOS** → genera `Magnet-o.app` / `.dmg` / `.zip`.
+3. Pulsa **Export Project**, elige carpeta y nombre.
+4. Ejecuta el archivo resultante. En macOS puede pedir *Privacidad y Seguridad → Abrir de todas formas* la primera vez.
+
+> El ejecutable empaqueta todo (escenas, scripts y `assets/`); no necesita Godot instalado para correr.
+
+---
+
+## Métricas técnicas (slides)
+
+El profesor pide un deck con **FPS, Frames/ms, tiempo de render y RAM**. El overlay **F3** muestra esos valores en vivo; la guía para capturarlos y el guion completo de las diapositivas está en **[`docs/SLIDES_METRICAS.md`](docs/SLIDES_METRICAS.md)**.
+
+---
+
 ## Estructura del proyecto
 
 ```
 magnet-o/
-├── project.godot          # Configuración del proyecto Godot
+├── project.godot          # Configuración del proyecto (autoloads, main_scene, capas)
 ├── icon.svg               # Ícono de la app
+├── assets/
+│   ├── sprites/           # player.png, box.png, enemy.png (pixel-art temporal)
+│   └── audio/             # jump.wav, magnet.wav, music.wav (sintetizados)
 ├── scenes/
-│   ├── Level1.tscn        # Nivel principal (puzzles de botones + meta)
+│   ├── MainMenu.tscn      # Menú principal (escena de inicio)
+│   ├── Level1.tscn        # Nivel principal (puzzles + enemigo + meta)
 │   ├── TestLevel.tscn     # Sandbox de mecánicas
-│   ├── Player.tscn        # Mag-Boy (CharacterBody2D + área magnética)
-│   ├── MetalBox.tscn      # Caja metálica (RigidBody2D)
+│   ├── Player.tscn        # Mag-Boy (CharacterBody2D + Sprite2D + área magnética)
+│   ├── MetalBox.tscn      # Caja metálica (RigidBody2D + Sprite2D)
 │   ├── Button.tscn        # Botón de presión (Area2D)
 │   ├── Door.tscn          # Puerta vinculada a botones (StaticBody2D)
 │   ├── Goal.tscn          # Zona de meta (Area2D)
-│   └── Enemy.tscn         # Patrullero (CharacterBody2D + HitArea)
-└── scripts/
-    ├── Player.gd          # Movimiento, magnetismo, respawn y selección
-    ├── MetalBox.gd        # Estado visual y selección de la caja
-    ├── Button.gd          # Detección de presión y notificación al target
-    ├── Door.gd            # Lógica AND de botones (required_presses)
-    ├── Goal.gd            # Trigger de fin de nivel
-    └── Enemy.gd           # Patrullaje + daño al jugador + muerte por caja
+│   └── Enemy.tscn         # Patrullero (CharacterBody2D + Sprite2D + HitArea)
+├── scripts/
+│   ├── Player.gd          # Movimiento, magnetismo, respawn, audio
+│   ├── MetalBox.gd        # Selección de la caja (tinte)
+│   ├── Button.gd          # Detección de presión y notificación al target
+│   ├── Door.gd            # Lógica AND de botones (required_presses)
+│   ├── Goal.gd            # Trigger de fin de nivel
+│   ├── Enemy.gd           # Patrullaje + daño al jugador + muerte por caja
+│   ├── MainMenu.gd        # Botones del menú
+│   ├── Level.gd           # Flujo del nivel (música, R, Esc)
+│   ├── AudioManager.gd    # Autoload de audio (SFX + música)
+│   └── PerfOverlay.gd     # Autoload de métricas (F3)
+├── tools/
+│   └── gen_assets.py      # Generador de sprites + audio placeholder
+└── docs/
+    └── SLIDES_METRICAS.md # Guion de slides + cómo medir FPS/RAM/render
 ```
 
 ---
@@ -216,5 +290,5 @@ magnet-o/
 |------------|--------|-----------|
 | 1 · Prototipo de mecánica | ✅ | Movimiento de plataforma + magnetismo con polaridad dual. |
 | 2 · Cajas e interacción | ✅ | `MetalBox` con selección y ciclo de objetivo (`Shift`). |
-| **3 · Nivel y enemigos** *(12/05/2026)* | 🟢 *funcional* | Botones, puertas con lógica AND, zona de meta, enemigo patrullero con daño + condición de muerte por caja, respawn del jugador, Nivel 1 jugable de inicio a fin. Pendiente "nice to have": migrar el escenario a Tilemap. |
-| 4 · Arte final + audio | 🔜 | Sustituir polígonos por sprites, añadir SFX y música. |
+| **3 · Nivel y enemigos** *(12/05/2026)* | ✅ | Botones, puertas con lógica AND, zona de meta, enemigo patrullero (daño + muerte por caja), respawn, **Nivel 1 jugable de inicio a fin**. Pendiente opcional: migrar el escenario a Tilemap (hoy usa polígonos). |
+| **4 · Pulido y entrega** | 🟡 *en curso* | Hecho: **sprites pixel-art temporales**, **audio** (salto/imán/música), **Menú Principal**, overlay de métricas (F3), guía de export y de slides. Pendiente: **pixel-art definitivo + fondos**, exportar el `.exe`/`.app` final, y rellenar los slides con tus números reales. |

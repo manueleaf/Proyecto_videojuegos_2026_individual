@@ -1,0 +1,70 @@
+[gd_scene load_steps=2 format=3 uid="uid://mnumagneto001"]
+
+[ext_resource type="Script" path="res://scripts/MainMenu.gd" id="1_menu"]
+
+[node name="MainMenu" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_menu")
+
+[node name="Background" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.09, 0.11, 0.16, 1)
+
+[node name="Title" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -320.0
+offset_top = 130.0
+offset_right = 320.0
+offset_bottom = 220.0
+theme_override_colors/font_color = Color(0.75, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 72
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "MAGNET-O"
+
+[node name="Subtitle" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -320.0
+offset_top = 222.0
+offset_right = 320.0
+offset_bottom = 252.0
+theme_override_colors/font_color = Color(0.7, 0.72, 0.8, 1)
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+text = "Plataformas con polaridad magnetica"
+
+[node name="Play" type="Button" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 330.0
+offset_right = 120.0
+offset_bottom = 378.0
+theme_override_font_sizes/font_size = 22
+text = "Jugar"
+
+[node name="Quit" type="Button" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 392.0
+offset_right = 120.0
+offset_bottom = 440.0
+theme_override_font_sizes/font_size = 22
+text = "Salir"
+
+[node name="Hint" type="Label" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -44.0
+theme_override_colors/font_color = Color(0.6, 0.62, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "A/D o Flechas: mover    Espacio: saltar    J: atraer    K: repeler    Shift: cambiar caja    F3: metricas    R: reiniciar    Esc: menu"

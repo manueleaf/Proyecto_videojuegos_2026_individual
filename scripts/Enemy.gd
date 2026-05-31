@@ -12,9 +12,7 @@ class_name PatrolEnemy
 @export var debug_enemy: bool = false
 
 @onready var hit_area: Area2D = $HitArea
-@onready var sprite: Polygon2D = $Sprite
-@onready var eye_left: Polygon2D = $EyeLeft
-@onready var eye_right: Polygon2D = $EyeRight
+@onready var sprite: Sprite2D = $Sprite
 
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 var _spawn_x: float
