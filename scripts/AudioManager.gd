@@ -8,6 +8,8 @@ const PATHS := {
 	"jump": "res://assets/audio/jump.wav",
 	"magnet": "res://assets/audio/magnet.wav",
 	"music": "res://assets/audio/music.wav",
+	"gear": "res://assets/audio/gear.wav",
+	"hurt": "res://assets/audio/hurt.wav",
 }
 
 var _sfx_pool: Array[AudioStreamPlayer] = []

@@ -22,9 +22,12 @@ var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 @onready var magnet_area: Area2D = $MagnetArea
 @onready var sprite: Sprite2D = $Sprite
-@onready var core: Polygon2D = $Core
+@onready var core: Sprite2D = $Core
 
 var _spawn_position: Vector2
+var _anim_t: float = 0.0
+var _was_on_floor: bool = true
+var _affected: Array = []  # Cajas a las que se dibuja el rayo magnetico
 
 
 func _ready() -> void:
@@ -39,6 +42,8 @@ func respawn() -> void:
 	current_polarity = Polarity.NONE
 	_set_selected_box(null)
 	Audio.set_magnet_active(false)
+	Audio.play_sfx("hurt")
+	Game.notify_death()
 
 
 func _physics_process(delta: float) -> void:
@@ -50,6 +55,8 @@ func _physics_process(delta: float) -> void:
 	_apply_magnetism()
 	_update_visual_feedback()
 	move_and_slide()
+	_update_sprite_anim(delta)
+	queue_redraw()
 
 
 func _handle_gravity(delta: float) -> void:
@@ -105,6 +112,7 @@ func _update_target_selection() -> void:
 
 
 func _apply_magnetism() -> void:
+	_affected.clear()
 	if current_polarity == Polarity.NONE:
 		return
 
@@ -112,10 +120,12 @@ func _apply_magnetism() -> void:
 		# Atraccion: solo a la caja seleccionada.
 		if selected_box != null:
 			_apply_magnet_force(selected_box, true)
+			_affected.append(selected_box)
 	else:
 		# Repulsion: a todas las cajas en rango (util contra drones / lanzar varias).
 		for body in _get_metal_bodies_in_range():
 			_apply_magnet_force(body, false)
+			_affected.append(body)
 
 
 func _apply_magnet_force(body: RigidBody2D, is_attract: bool) -> void:
@@ -186,11 +196,54 @@ func magnet_area_radius() -> float:
 
 
 func _update_visual_feedback() -> void:
-	# El nucleo cambia de color segun la polaridad activa.
+	# El nucleo (orbe) cambia de color segun la polaridad activa.
 	match current_polarity:
 		Polarity.ATTRACT:
-			core.color = Color(0.2, 0.6, 1.0, 1.0)  # Azul
+			core.modulate = Color(0.3, 0.7, 1.0, 1.0)  # Azul electrico
 		Polarity.REPEL:
-			core.color = Color(1.0, 0.25, 0.25, 1.0)  # Rojo
+			core.modulate = Color(1.0, 0.3, 0.3, 1.0)  # Rojo carmesi
 		_:
-			core.color = Color(0.9, 0.9, 0.4, 1.0)  # Amarillo (neutro)
+			core.modulate = Color(0.95, 0.85, 0.5, 1.0)  # Ambar (neutro)
+
+
+func _update_sprite_anim(delta: float) -> void:
+	# Animacion procedural barata: vaiven, inclinacion y squash al aterrizar.
+	_anim_t += delta
+	var on_floor: bool = is_on_floor()
+
+	# Squash al tocar suelo tras estar en el aire.
+	if on_floor and not _was_on_floor:
+		sprite.scale = Vector2(1.18, 0.82)
+	_was_on_floor = on_floor
+	sprite.scale = sprite.scale.lerp(Vector2.ONE, 0.2)
+
+	# Vaiven vertical (mas marcado al caminar, suave en reposo, nulo en el aire).
+	var amp: float = 0.0
+	var freq: float = 3.0
+	if on_floor:
+		if absf(velocity.x) > 10.0:
+			amp = 1.5
+			freq = 14.0
+		else:
+			amp = 0.8
+	var bob: float = sin(_anim_t * freq) * amp
+	sprite.position.y = bob
+	core.position.y = 5.0 + bob
+
+	# Inclinacion hacia la direccion de movimiento (solo en suelo).
+	var lean: float = clampf(velocity.x / speed, -1.0, 1.0) * 0.08
+	sprite.rotation = lerp(sprite.rotation, lean if on_floor else 0.0, 0.2)
+
+
+func _draw() -> void:
+	# Rayo magnetico hacia cada caja afectada (azul al atraer, rojo al repeler).
+	if current_polarity == Polarity.NONE or _affected.is_empty():
+		return
+	var col: Color = Color(0.3, 0.7, 1.0) if current_polarity == Polarity.ATTRACT else Color(1.0, 0.3, 0.3)
+	for b in _affected:
+		if not is_instance_valid(b):
+			continue
+		var p: Vector2 = to_local(b.global_position)
+		draw_line(Vector2.ZERO, p, Color(col.r, col.g, col.b, 0.22), 6.0)
+		draw_line(Vector2.ZERO, p, Color(col.r, col.g, col.b, 0.9), 2.0)
+		draw_circle(p, 6.0, Color(col.r, col.g, col.b, 0.45))

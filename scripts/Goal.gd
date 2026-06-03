@@ -1,12 +1,10 @@
 extends Area2D
 class_name LevelGoal
 
-## Zona de meta: cuando el jugador entra, emite la señal `reached`
-## y opcionalmente muestra una etiqueta de HUD.
+## Zona de meta ("Salida Segura"): cuando el jugador entra, avisa a `Game`
+## (victoria) y emite la señal `reached`.
 
 signal reached
-
-@export var hud_label_path: NodePath
 
 var _triggered: bool = false
 
@@ -22,7 +20,4 @@ func _on_body_entered(body: Node) -> void:
 		return
 	_triggered = true
 	reached.emit()
-	if not hud_label_path.is_empty():
-		var label: CanvasItem = get_node_or_null(hud_label_path) as CanvasItem
-		if label:
-			label.visible = true
+	Game.notify_win()

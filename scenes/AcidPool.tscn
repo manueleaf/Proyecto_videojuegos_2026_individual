@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://cidmagneto01x"]
+
+[ext_resource type="Script" path="res://scripts/Hazard.gd" id="1_h"]
+
+[sub_resource type="RectangleShape2D" id="AcidShape"]
+size = Vector2(90, 16)
+
+[node name="AcidPool" type="Area2D"]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_h")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("AcidShape")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.22, 0.92, 0.42, 0.85)
+polygon = PackedVector2Array(-45, -8, 45, -8, 45, 8, -45, 8)
+
+[node name="Top" type="Polygon2D" parent="."]
+color = Color(0.65, 1, 0.72, 0.95)
+polygon = PackedVector2Array(-45, -8, 45, -8, 45, -5, -45, -5)

@@ -18,10 +18,11 @@ Plataformero 2D hecho en **Godot 4.6** donde controlas a **Mag-Boy**, un persona
 - [Audio](#audio)
 - [Arte temporal (sprites)](#arte-temporal-sprites)
 - [Menú y flujo](#menú-y-flujo)
-- [Overlay de rendimiento (F3)](#overlay-de-rendimiento-f3)
+- [Overlay de rendimiento](#overlay-de-rendimiento-información-técnica-en-ejecución)
 - [Exportar a ejecutable](#exportar-a-ejecutable)
 - [Métricas técnicas (slides)](#métricas-técnicas-slides)
 - [Estructura del proyecto](#estructura-del-proyecto)
+- [Estado vs la propuesta](#estado-vs-la-propuesta)
 - [Hoja de ruta (entregables)](#hoja-de-ruta-entregables)
 
 ---
@@ -89,11 +90,13 @@ Plataformero 2D hecho en **Godot 4.6** donde controlas a **Mag-Boy**, un persona
 | Polaridad **azul** (atraer)           | `J` o **clic izquierdo** (mantener)   |
 | Polaridad **roja** (repeler)          | `K` o **clic derecho** (mantener)     |
 | Cambiar de caja seleccionada (mientras atraes) | `Shift`                      |
-| Métricas de rendimiento (overlay)     | `F3`                                  |
+| Panel técnico completo                | **`` ` ``** (acento grave) o `F3`     |
 | Reiniciar nivel                       | `R`                                   |
 | Volver al menú principal              | `Esc`                                 |
 
-El núcleo del personaje cambia de color según la polaridad activa: amarillo (neutro), azul (atraer), rojo (repeler).
+El núcleo del personaje cambia de color según la polaridad activa: ámbar (neutro), azul (atraer), rojo (repeler).
+
+> **Nota macOS:** en Mac `F3` lo intercepta *Mission Control*, por eso la tecla principal del panel técnico es el **acento grave (`` ` ``)**, la tecla a la izquierda del `1`. Además, una **lectura mini de FPS/ms/RAM está siempre visible** arriba a la derecha.
 
 ---
 
@@ -130,8 +133,8 @@ El núcleo del personaje cambia de color según la polaridad activa: amarillo (n
 - `Area2D` (`Goal`) que detecta al jugador (vía el grupo `player`, añadido automáticamente en `Player._ready`).
 - Al activarse muestra una etiqueta de HUD configurable (`hud_label_path`) y emite la señal `reached` para poder encadenar lógica futura (cargar siguiente nivel, mostrar tiempo, etc.).
 
-### Enemigo patrullero
-- `CharacterBody2D` que se mueve a la izquierda/derecha desde su punto de aparición hasta `patrol_distance` y rebota; también invierte dirección al chocar con una pared.
+### Dron Centinela (vuela)
+- `CharacterBody2D` **volador** (sin gravedad): flota alrededor de su altura de aparición con un leve vaivén y patrulla a izquierda/derecha hasta `patrol_distance`, rebotando en los límites o al chocar con una pared. Se inclina hacia su dirección de avance.
 - Capa de física propia (`Enemy`, capa 4): no colisiona físicamente con el jugador ni con las cajas, pero sí con el suelo y paredes. La detección de impactos va por un `Area2D` (`HitArea`).
 - **Condición de daño al jugador:** al entrar en contacto, llama `Player.respawn()` → el jugador vuelve a su posición inicial con velocidad y polaridad reseteadas.
 - **Condición de muerte del enemigo:** muere si una `MetalBox` lo impacta con `linear_velocity.length() >= box_kill_speed` (250 por defecto). Esto se logra fácilmente con la polaridad **roja** (repulsión) — el imán convierte la caja en un proyectil.
@@ -187,9 +190,9 @@ El nivel se atraviesa de izquierda a derecha y combina dos retos:
 
 ## Enemigos
 
-- **Patrullero (`Enemy.tscn`)**: se mueve horizontalmente alrededor de su spawn (`patrol_distance` configurable). El impacto con el jugador lo respawnea; muere si lo golpea una caja a más de `box_kill_speed` (250 px/s por defecto).
+- **Dron Centinela (`Enemy.tscn`)**: robot **volador** que flota y patrulla horizontalmente alrededor de su spawn (`patrol_distance` configurable), tal como en la propuesta. No dispara; el impacto con el jugador lo respawnea. Muere si lo golpea una caja a más de `box_kill_speed` (250 px/s por defecto).
 - **Capa de física `Enemy` (4)**: separada de Player (3) y MetalBox (2) para evitar enganches físicos. Toda la interacción pasa por su `HitArea`.
-- Forma sencilla de derrotarlo en el Nivel 1: párate cerca de una caja, mantén **K** (repulsión) apuntando hacia el enemigo — la caja sale disparada y supera el umbral de velocidad.
+- Forma sencilla de derrotarlo en el Nivel 1: párate cerca de una caja, mantén **K** (repulsión) apuntando hacia el dron — la caja sale disparada y supera el umbral de velocidad.
 
 ---
 
@@ -204,10 +207,15 @@ El nivel se atraviesa de izquierda a derecha y combina dos retos:
 
 ## Arte temporal (sprites)
 
-- Sprites estilo **pixel-art** generados por código en `assets/sprites/` (`player.png`, `box.png`, `enemy.png`).
-- Se cargan mediante `Sprite2D` en sus escenas; el núcleo del jugador sigue marcando la polaridad por color y la caja seleccionada se resalta con un **tinte azul**.
-- El **escenario** (suelo, paredes, plataformas) sigue siendo geometría con `Polygon2D` — la migración a Tilemap queda pendiente.
-- Reproducibles/editables con `python3 tools/gen_assets.py` (requiere `pillow` y `numpy`). Es arte **temporal**: reemplazar los PNG por el pixel-art final no requiere tocar código.
+Estética **industrial 16-bits** según la propuesta (gris oscuro + óxido, verde de salida, azul/rojo saturados para el magnetismo). Todo generado por código en `assets/sprites/` con `python3 tools/gen_assets.py` (requiere `pillow` y `numpy`).
+
+- **`player.png`** — Mag-Boy: casco, visor cian, antena con luz y un **socket** central donde brilla el núcleo.
+- **`core.png`** — orbe del núcleo (`Sprite2D` superpuesto) que se **tiñe** azul/rojo/ámbar según la polaridad (`modulate`).
+- **`box.png`** — caja metálica con bisel, remaches, óxido y franjas magnéticas azul/roja; al seleccionarla se resalta con un tinte.
+- **`enemy.png`** — Dron Centinela con rotor y sensor rojo.
+- **`bg_factory.png`** — fondo de la fábrica (2600×1000): paneles con remaches, tuberías, vigas con franjas de peligro, luces de neón de emergencia, resplandor verde de salida y pozo de metal fundido, con grano y viñeta.
+- El **escenario** jugable (suelo, paredes, plataformas) usa `Polygon2D` recoloreados a metal oscuro con **borde ámbar de advertencia**; la migración a Tilemap sigue pendiente (opcional).
+- Los `Sprite2D` usan **filtro Nearest** (`texture_filter`) para que el pixel-art se vea nítido. Es arte **temporal**: sustituir los PNG por el pixel-art final no requiere tocar código.
 
 ---
 
@@ -218,10 +226,13 @@ El nivel se atraviesa de izquierda a derecha y combina dos retos:
 
 ---
 
-## Overlay de rendimiento (F3)
+## Overlay de rendimiento (información técnica en ejecución)
 
-- **Autoload `PerfOverlay`** (`scripts/PerfOverlay.gd`): pulsa **F3** en cualquier momento para mostrar **FPS, ms por frame, tiempo de CPU/física, RAM estática, VRAM y draw calls** (vía la API `Performance` de Godot).
-- Es la herramienta para capturar los datos técnicos del informe del profesor.
+- **Autoload `PerfOverlay`** (`scripts/PerfOverlay.gd`).
+- **Lectura mini siempre visible** (arriba a la derecha): **FPS · ms/frame · RAM**. Así el dato técnico está presente durante toda la partida y la demo.
+- **Panel completo** con la tecla **`` ` ``** (acento grave) o **F3**: añade **CPU (proceso) ms, física ms, VRAM, draw calls y objetos en frame** (vía la API `Performance` de Godot).
+- En **macOS** la tecla principal es el **acento grave**, porque `F3` lo captura Mission Control.
+- Es la herramienta para capturar los datos técnicos del informe del profesor (ver [`docs/SLIDES_METRICAS.md`](docs/SLIDES_METRICAS.md)).
 
 ---
 
@@ -253,7 +264,7 @@ magnet-o/
 ├── project.godot          # Configuración del proyecto (autoloads, main_scene, capas)
 ├── icon.svg               # Ícono de la app
 ├── assets/
-│   ├── sprites/           # player.png, box.png, enemy.png (pixel-art temporal)
+│   ├── sprites/           # player, core, box, enemy, hazard + bg_factory (pixel-art)
 │   └── audio/             # jump.wav, magnet.wav, music.wav (sintetizados)
 ├── scenes/
 │   ├── MainMenu.tscn      # Menú principal (escena de inicio)
@@ -275,12 +286,39 @@ magnet-o/
 │   ├── MainMenu.gd        # Botones del menú
 │   ├── Level.gd           # Flujo del nivel (música, R, Esc)
 │   ├── AudioManager.gd    # Autoload de audio (SFX + música)
-│   └── PerfOverlay.gd     # Autoload de métricas (F3)
+│   └── PerfOverlay.gd     # Autoload de métricas (mini + panel)
 ├── tools/
-│   └── gen_assets.py      # Generador de sprites + audio placeholder
+│   └── gen_assets.py      # Generador de sprites + fondo + audio
 └── docs/
     └── SLIDES_METRICAS.md # Guion de slides + cómo medir FPS/RAM/render
 ```
+
+---
+
+## Estado vs la propuesta
+
+Verificación frente a `Propuesta de Videojuego` (Magnet-O: Escape de la Fábrica).
+
+| Elemento de la propuesta | Estado | Nota |
+|--------------------------|--------|------|
+| Movimiento (correr/saltar) | ✅ | Con animación procedural básica. |
+| Polaridad Azul (atraer) / Roja (repeler) | ✅ | Mecánica central. |
+| Apilar cajas / alcanzar zonas altas | ✅ | Física de cajas. |
+| Lanzar caja contra enemigo para destruirlo | ✅ | Dron muere por impacto de caja. |
+| Cajas metálicas + botones de presión + puertas | ✅ | Botones con lógica AND. |
+| Enemigo: Dron Centinela **volador**, patrulla, daño al contacto | ✅ | Ahora vuela (antes caminaba). |
+| Meta / "Salida Segura" + reinicio al recibir daño | ✅ | Meta + respawn. |
+| Estilo industrial (óxido, neón, azul/rojo saturado) | ✅ | Sprites + fondo de fábrica. Arte **temporal**, no el pixel-art final. |
+| Menú principal + pantalla de victoria | ✅ | Falta pantalla de **derrota** explícita (hoy: respawn directo). |
+| Info técnica en ejecución (FPS/ms/RAM) | ✅ | Mini siempre visible + panel (`` ` ``/F3). |
+| Sonido básico (salto, imán, música) | ✅ | WAVs sintetizados (temporales). |
+| **Coleccionables (engranajes dorados)** | ❌ | No implementado aún. |
+| **Peligros: láseres de seguridad / ácido** | ❌ | Solo el dron causa daño por ahora. |
+| **Pixel art final + fondos definitivos** | ❌ | Arte actual es temporal generado por código. |
+| **4 habitaciones progresivas (tutorial→final)** | ⚠️ | Hay 1 nivel que combina las mecánicas (el MVP permite "1 nivel grande o 3 habitaciones"). |
+| Tilemaps para el escenario | ⚠️ | Hoy `Polygon2D`; pendiente opcional. |
+| GDScript **con C#** | ⚠️ | Solo GDScript (suficiente para el MVP). |
+| Ejecutable (.exe/.app) | 📋 | Pasos en este README; lo exportas desde Godot. |
 
 ---
 
@@ -291,4 +329,4 @@ magnet-o/
 | 1 · Prototipo de mecánica | ✅ | Movimiento de plataforma + magnetismo con polaridad dual. |
 | 2 · Cajas e interacción | ✅ | `MetalBox` con selección y ciclo de objetivo (`Shift`). |
 | **3 · Nivel y enemigos** *(12/05/2026)* | ✅ | Botones, puertas con lógica AND, zona de meta, enemigo patrullero (daño + muerte por caja), respawn, **Nivel 1 jugable de inicio a fin**. Pendiente opcional: migrar el escenario a Tilemap (hoy usa polígonos). |
-| **4 · Pulido y entrega** | 🟡 *en curso* | Hecho: **sprites pixel-art temporales**, **audio** (salto/imán/música), **Menú Principal**, overlay de métricas (F3), guía de export y de slides. Pendiente: **pixel-art definitivo + fondos**, exportar el `.exe`/`.app` final, y rellenar los slides con tus números reales. |
+| **4 · Pulido y entrega** | 🟡 *en curso* | Hecho: **arte industrial** (sprites + fondo de fábrica + escenario recoloreado), **dron volador**, **animación procedural**, **audio**, **Menú Principal**, **info técnica en ejecución** (mini + panel `` ` ``/F3), guía de export y de slides. Pendiente: **pixel-art definitivo**, coleccionables y peligros (láser/ácido), pantalla de derrota, exportar el `.exe`/`.app`, y rellenar los slides con tus números. |

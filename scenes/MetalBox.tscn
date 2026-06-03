@@ -18,4 +18,5 @@ script = ExtResource("1_box")
 shape = SubResource("BoxShape")
 
 [node name="Sprite" type="Sprite2D" parent="."]
+texture_filter = 1
 texture = ExtResource("2_tex")

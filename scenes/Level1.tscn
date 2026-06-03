@@ -1,6 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://lv1magneto001"]
+[gd_scene load_steps=15 format=3 uid="uid://lv1magneto001"]
 
 [ext_resource type="Script" path="res://scripts/Level.gd" id="0_level"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bg_factory.png" id="7_bg"]
+[ext_resource type="PackedScene" path="res://scenes/Collectible.tscn" id="8_gear"]
+[ext_resource type="PackedScene" path="res://scenes/AcidPool.tscn" id="9_acid"]
+[ext_resource type="PackedScene" path="res://scenes/Laser.tscn" id="10_laser"]
 [ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/MetalBox.tscn" id="2_box"]
 [ext_resource type="PackedScene" path="res://scenes/Button.tscn" id="3_btn"]
@@ -21,8 +25,13 @@ size = Vector2(100, 20)
 script = ExtResource("0_level")
 
 [node name="Background" type="Polygon2D" parent="."]
-color = Color(0.1, 0.12, 0.18, 1)
-polygon = PackedVector2Array(-1200, -500, 1200, -500, 1200, 500, -1200, 500)
+color = Color(0.04, 0.04, 0.06, 1)
+polygon = PackedVector2Array(-1400, -600, 1400, -600, 1400, 600, -1400, 600)
+
+[node name="BgImage" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, 120)
+texture = ExtResource("7_bg")
 
 [node name="Ground" type="StaticBody2D" parent="."]
 position = Vector2(0, 360)
@@ -32,8 +41,12 @@ collision_layer = 1
 shape = SubResource("GroundShape")
 
 [node name="Visual" type="Polygon2D" parent="Ground"]
-color = Color(0.28, 0.3, 0.35, 1)
+color = Color(0.2, 0.18, 0.16, 1)
 polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, 30, -1200, 30)
+
+[node name="Edge" type="Polygon2D" parent="Ground"]
+color = Color(0.55, 0.42, 0.16, 1)
+polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, -26, -1200, -26)
 
 [node name="LeftWall" type="StaticBody2D" parent="."]
 position = Vector2(-1170, 0)
@@ -43,7 +56,7 @@ collision_layer = 1
 shape = SubResource("WallShape")
 
 [node name="Visual" type="Polygon2D" parent="LeftWall"]
-color = Color(0.28, 0.3, 0.35, 1)
+color = Color(0.18, 0.16, 0.15, 1)
 polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
 
 [node name="RightWall" type="StaticBody2D" parent="."]
@@ -54,7 +67,7 @@ collision_layer = 1
 shape = SubResource("WallShape")
 
 [node name="Visual" type="Polygon2D" parent="RightWall"]
-color = Color(0.28, 0.3, 0.35, 1)
+color = Color(0.18, 0.16, 0.15, 1)
 polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
 
 [node name="SmallPlatform" type="StaticBody2D" parent="."]
@@ -65,8 +78,12 @@ collision_layer = 1
 shape = SubResource("SmallPlatformShape")
 
 [node name="Visual" type="Polygon2D" parent="SmallPlatform"]
-color = Color(0.35, 0.38, 0.45, 1)
+color = Color(0.24, 0.22, 0.2, 1)
 polygon = PackedVector2Array(-50, -10, 50, -10, 50, 10, -50, 10)
+
+[node name="Edge" type="Polygon2D" parent="SmallPlatform"]
+color = Color(0.55, 0.42, 0.16, 1)
+polygon = PackedVector2Array(-50, -10, 50, -10, 50, -7, -50, -7)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
@@ -80,7 +97,8 @@ text = "MAGNET-O  -  Nivel 1
 A / D  o  Flechas        Mover                Espacio / W / Up       Saltar
 J  o  Clic Izquierdo     Polaridad AZUL (atraer caja seleccionada)
 K  o  Clic Derecho       Polaridad ROJA (repeler todas en rango)
-Shift (atrayendo)        Cambiar de caja objetivo"
+Shift (atrayendo)        Cambiar de caja objetivo
+Tecla grave (`) o F3     Info tecnica         R  Reiniciar         Esc  Menu"
 
 [node name="Hint1" type="Label" parent="HUD"]
 offset_left = 16.0
@@ -122,6 +140,55 @@ horizontal_alignment = 1
 vertical_alignment = 1
 text = "¡NIVEL COMPLETADO!"
 
+[node name="VictorySub" type="Label" parent="HUD"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = 10.0
+offset_right = 280.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.85, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+text = "R: reiniciar     Esc: menu"
+
+[node name="GearLabel" type="Label" parent="HUD"]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -160.0
+offset_top = 12.0
+offset_right = 160.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(1, 0.82, 0.3, 1)
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+text = "Engranajes: 0 / 0"
+
+[node name="DefeatFlash" type="ColorRect" parent="HUD"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.75, 0.1, 0.12, 0.5)
+mouse_filter = 2
+
+[node name="DeathLabel" type="Label" parent="HUD/DefeatFlash"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -28.0
+offset_right = 200.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(1, 0.95, 0.95, 1)
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "¡REINICIANDO!"
+
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(-1000, 240)
 
@@ -158,9 +225,52 @@ auto_close = false
 required_presses = 2
 
 [node name="Enemy" parent="." instance=ExtResource("6_enemy")]
-position = Vector2(490, 270)
+position = Vector2(490, 285)
 patrol_distance = 90.0
 
 [node name="Goal" parent="." instance=ExtResource("5_goal")]
 position = Vector2(1000, 280)
-hud_label_path = NodePath("../HUD/Victory")
+
+[node name="Gear1" parent="." instance=ExtResource("8_gear")]
+position = Vector2(-550, 295)
+
+[node name="Gear2" parent="." instance=ExtResource("8_gear")]
+position = Vector2(350, 235)
+
+[node name="Gear3" parent="." instance=ExtResource("8_gear")]
+position = Vector2(690, 300)
+
+[node name="AcidPool" parent="." instance=ExtResource("9_acid")]
+position = Vector2(760, 324)
+
+[node name="Laser" parent="." instance=ExtResource("10_laser")]
+position = Vector2(880, 250)
+
+[node name="Dust" type="CPUParticles2D" parent="."]
+position = Vector2(0, -260)
+amount = 50
+lifetime = 8.0
+preprocess = 4.0
+lifetime_randomness = 0.5
+emission_shape = 3
+emission_rect_extents = Vector2(1300, 80)
+direction = Vector2(0, 1)
+spread = 18.0
+gravity = Vector2(0, 6)
+initial_velocity_min = 4.0
+initial_velocity_max = 12.0
+scale_amount_min = 1.0
+scale_amount_max = 2.5
+color = Color(0.8, 0.72, 0.55, 0.22)
+
+[node name="SignExit" type="Label" parent="."]
+position = Vector2(945, 190)
+theme_override_colors/font_color = Color(0.4, 0.95, 0.5, 1)
+theme_override_font_sizes/font_size = 22
+text = "SALIDA >>"
+
+[node name="SignWarn" type="Label" parent="."]
+position = Vector2(430, 195)
+theme_override_colors/font_color = Color(1, 0.5, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "AVISO: DRON"
