@@ -248,14 +248,35 @@ Estética **industrial 16-bits** según la propuesta (gris oscuro + óxido, verd
 
 ## Exportar a ejecutable
 
-Para generar el binario (MVP) que evaluará el profesor:
+Los builds se generan en `build/` (ignorada por git). Requisitos previos (una sola vez):
 
-1. En Godot: **Editor → Manage Export Templates… → Download and Install** (solo la primera vez).
-2. **Project → Export…** y añade un preset:
-   - **Windows Desktop** → genera `Magnet-o.exe`.
-   - **macOS** → genera `Magnet-o.app` / `.dmg` / `.zip`.
-3. Pulsa **Export Project**, elige carpeta y nombre.
-4. Ejecuta el archivo resultante. En macOS puede pedir *Privacidad y Seguridad → Abrir de todas formas* la primera vez.
+- **Editor Estándar** (no la edición *Mono/.NET*): la edición Mono **no incluye plantilla Web**. Como el proyecto es GDScript, usa el Godot **Estándar 4.6.x**.
+- **Export templates** instaladas (Editor → *Manage Export Templates* → *Download and Install*).
+- **Import ETC2 ASTC** activado: *Project → Project Settings → Rendering → Textures → VRAM Compression → Import ETC2 ASTC* (si no, el export falla con *"ASTC texture format is disabled"*). Ya queda guardado en `project.godot`.
+
+### Desde el editor
+*Project → Export…* → elige el preset (**Web** o **macOS**) → *Export Project*.
+
+### Por línea de comandos (lo que se usó aquí)
+```bash
+GODOT="$HOME/Downloads/Godot_v4.6.2_standard.app/Contents/MacOS/Godot"
+# Web  ->  build/web/index.html
+"$GODOT" --headless --path . --export-release "Web"   build/web/index.html
+# macOS ->  build/macos/Magnet-o.app
+"$GODOT" --headless --path . --export-release "macOS" build/macos/Magnet-o.app
+```
+
+### Probar / compartir
+- **Web:** debe servirse por HTTP (no abras `index.html` con doble clic / `file://`).
+  ```bash
+  cd build/web && python3 -m http.server 8077   # luego abre http://localhost:8077
+  ```
+  Para compartir con el profesor: sube el contenido de `build/web/` a **itch.io** (como zip) o a cualquier hosting estático. *(El preset Web tiene `thread_support=false`, así que no necesita headers especiales.)*
+- **macOS:** el `.app` se firma **ad-hoc** para que abra en Apple Silicon:
+  ```bash
+  codesign --force --deep --sign - build/macos/Magnet-o.app
+  ```
+  Si macOS lo bloquea: clic derecho → *Abrir*, o `xattr -dr com.apple.quarantine build/macos/Magnet-o.app`.
 
 > El ejecutable empaqueta todo (escenas, scripts y `assets/`); no necesita Godot instalado para correr.
 

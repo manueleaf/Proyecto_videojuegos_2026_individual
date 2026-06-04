@@ -17,9 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Game="*res://scripts/Game.gd"
 Audio="*res://scripts/AudioManager.gd"
 PerfOverlay="*res://scripts/PerfOverlay.gd"
+Game="*res://scripts/Game.gd"
 
 [display]
 
@@ -86,3 +86,4 @@ cycle_target={
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
