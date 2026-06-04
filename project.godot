@@ -11,16 +11,21 @@ config_version=5
 [application]
 
 config/name="Magnet-o"
-run/main_scene="res://scenes/TestLevel.tscn"
+run/main_scene="res://scenes/MainMenu.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Game="*res://scripts/Game.gd"
+Audio="*res://scripts/AudioManager.gd"
+PerfOverlay="*res://scripts/PerfOverlay.gd"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
 
 [dotnet]
 
@@ -70,10 +75,10 @@ cycle_target={
 2d_physics/layer_1="World"
 2d_physics/layer_2="MetalBox"
 2d_physics/layer_3="Player"
+2d_physics/layer_4="Enemy"
 
 [physics]
 
-2d/default_gravity=980.0
 3d/physics_engine="Jolt Physics"
 
 [rendering]

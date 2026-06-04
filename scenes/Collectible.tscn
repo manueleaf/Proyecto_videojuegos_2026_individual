@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://df5h0gw1vymvf"]
+
+[ext_resource type="Script" path="res://scripts/Collectible.gd" id="1_g"]
+[ext_resource type="Texture2D" path="res://assets/sprites/gear.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="GearShape"]
+radius = 14.0
+
+[node name="Collectible" type="Area2D"]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_g")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("GearShape")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_tex")
