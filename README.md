@@ -15,6 +15,7 @@ Plataformero 2D hecho en **Godot 4.6** donde controlas a **Mag-Boy**, un persona
 - [Funciones actuales](#funciones-actuales)
 - [Nivel 1 — puzzles](#nivel-1--puzzles)
 - [Enemigos](#enemigos)
+- [Coleccionables y peligros](#coleccionables-y-peligros)
 - [Audio](#audio)
 - [Arte temporal (sprites)](#arte-temporal-sprites)
 - [Menú y flujo](#menú-y-flujo)
@@ -90,13 +91,13 @@ Plataformero 2D hecho en **Godot 4.6** donde controlas a **Mag-Boy**, un persona
 | Polaridad **azul** (atraer)           | `J` o **clic izquierdo** (mantener)   |
 | Polaridad **roja** (repeler)          | `K` o **clic derecho** (mantener)     |
 | Cambiar de caja seleccionada (mientras atraes) | `Shift`                      |
-| Panel técnico completo                | **`` ` ``** (acento grave) o `F3`     |
+| Panel técnico completo                | **`Tab`** (o `` ` `` / `F3`)          |
 | Reiniciar nivel                       | `R`                                   |
 | Volver al menú principal              | `Esc`                                 |
 
 El núcleo del personaje cambia de color según la polaridad activa: ámbar (neutro), azul (atraer), rojo (repeler).
 
-> **Nota macOS:** en Mac `F3` lo intercepta *Mission Control*, por eso la tecla principal del panel técnico es el **acento grave (`` ` ``)**, la tecla a la izquierda del `1`. Además, una **lectura mini de FPS/ms/RAM está siempre visible** arriba a la derecha.
+> **Nota macOS:** la tecla principal del panel técnico es **`Tab`** (funciona en cualquier teclado). `F3` no sirve en Mac porque lo intercepta *Mission Control*, y el acento grave (`` ` ``) es tecla muerta en teclados español/latino. Además, una **lectura mini de FPS/ms/RAM está siempre visible** arriba a la derecha.
 
 ---
 
@@ -115,6 +116,7 @@ El núcleo del personaje cambia de color según la polaridad activa: ámbar (neu
   - Si la caja seleccionada sale del área, se deselecciona sola.
 - **Polaridad REPELER (roja):** empuja **todas** las cajas dentro del área simultáneamente (útil para apartar varios objetos a la vez o lanzarlos).
 - **Fuerza ajustada para los puzzles:** `magnet_force = 1800`, `magnet_falloff = 0.35`. Con la gravedad del proyecto (`980`) y caja `mass = 1`, esto da una fuerza neta hacia el imán de **+820** unidades al estar pegado y **+190** unidades al borde del radio — la caja se puede elevar en todo el alcance. Ambos parámetros siguen siendo `@export`, así que se afinan desde el inspector.
+- **Rayos magnéticos**: mientras hay polaridad activa se dibuja un haz (azul al atraer, rojo al repeler) desde el jugador hacia cada caja afectada (`Player._draw`).
 - Modo de depuración: `debug_magnetism` imprime distancias y fuerzas aplicadas en consola.
 
 ### Botones (pressure plates)
@@ -192,7 +194,15 @@ El nivel se atraviesa de izquierda a derecha y combina dos retos:
 
 - **Dron Centinela (`Enemy.tscn`)**: robot **volador** que flota y patrulla horizontalmente alrededor de su spawn (`patrol_distance` configurable), tal como en la propuesta. No dispara; el impacto con el jugador lo respawnea. Muere si lo golpea una caja a más de `box_kill_speed` (250 px/s por defecto).
 - **Capa de física `Enemy` (4)**: separada de Player (3) y MetalBox (2) para evitar enganches físicos. Toda la interacción pasa por su `HitArea`.
-- Forma sencilla de derrotarlo en el Nivel 1: párate cerca de una caja, mantén **K** (repulsión) apuntando hacia el dron — la caja sale disparada y supera el umbral de velocidad.
+- Forma sencilla de derrotarlo en el Nivel 1: párate cerca de una caja, mantén **K** (repulsión) apuntando hacia el dron — la caja sale disparada y supera el umbral de velocidad. Al destruirlo hace un pequeño *pop*.
+
+---
+
+## Coleccionables y peligros
+
+- **Engranajes dorados (`Collectible.tscn`)**: 3 repartidos por el nivel; el HUD muestra `Engranajes: X / N`. Suenan al recogerse y desaparecen con un pop. El contador vive en el autoload `Game`.
+- **Pozo de ácido (`AcidPool.tscn`)** y **láser de seguridad (`Laser.tscn`)**: peligros que reinician al jugador al contacto (script común `Hazard.gd`). El láser **parpadea** para cruzarlo con *timing*. Forman un pequeño *gauntlet* en el tramo final antes de la salida.
+- **Victoria / derrota**: al llegar a la meta aparece el panel de victoria con los engranajes recogidos; al morir, un **flash rojo + "¡REINICIANDO!"** y respawn. El autoload `Game` emite las señales y `Level.gd` actualiza el HUD.
 
 ---
 
@@ -230,8 +240,8 @@ Estética **industrial 16-bits** según la propuesta (gris oscuro + óxido, verd
 
 - **Autoload `PerfOverlay`** (`scripts/PerfOverlay.gd`).
 - **Lectura mini siempre visible** (arriba a la derecha): **FPS · ms/frame · RAM**. Así el dato técnico está presente durante toda la partida y la demo.
-- **Panel completo** con la tecla **`` ` ``** (acento grave) o **F3**: añade **CPU (proceso) ms, física ms, VRAM, draw calls y objetos en frame** (vía la API `Performance` de Godot).
-- En **macOS** la tecla principal es el **acento grave**, porque `F3` lo captura Mission Control.
+- **Panel completo** con **`Tab`** (o `` ` `` / `F3`): añade **CPU (proceso) ms, física ms, VRAM, draw calls y objetos en frame** (vía la API `Performance` de Godot).
+- En **macOS** usa **`Tab`**: `F3` lo captura Mission Control y el acento grave es tecla muerta en teclados español/latino.
 - Es la herramienta para capturar los datos técnicos del informe del profesor (ver [`docs/SLIDES_METRICAS.md`](docs/SLIDES_METRICAS.md)).
 
 ---
@@ -253,7 +263,7 @@ Para generar el binario (MVP) que evaluará el profesor:
 
 ## Métricas técnicas (slides)
 
-El profesor pide un deck con **FPS, Frames/ms, tiempo de render y RAM**. El overlay **F3** muestra esos valores en vivo; la guía para capturarlos y el guion completo de las diapositivas está en **[`docs/SLIDES_METRICAS.md`](docs/SLIDES_METRICAS.md)**.
+El profesor pide un deck con **FPS, Frames/ms, tiempo de render y RAM**. El overlay (**`Tab`**) muestra esos valores en vivo; la guía para capturarlos y el guion completo de las diapositivas está en **[`docs/SLIDES_METRICAS.md`](docs/SLIDES_METRICAS.md)**.
 
 ---
 
@@ -264,32 +274,39 @@ magnet-o/
 ├── project.godot          # Configuración del proyecto (autoloads, main_scene, capas)
 ├── icon.svg               # Ícono de la app
 ├── assets/
-│   ├── sprites/           # player, core, box, enemy, hazard + bg_factory (pixel-art)
-│   └── audio/             # jump.wav, magnet.wav, music.wav (sintetizados)
+│   ├── sprites/           # player, core, box, enemy, gear, hazard + bg_factory
+│   └── audio/             # jump, magnet, music, gear, hurt (sintetizados)
 ├── scenes/
 │   ├── MainMenu.tscn      # Menú principal (escena de inicio)
-│   ├── Level1.tscn        # Nivel principal (puzzles + enemigo + meta)
+│   ├── Level1.tscn        # Nivel principal (puzzles + dron + peligros + meta)
 │   ├── TestLevel.tscn     # Sandbox de mecánicas
 │   ├── Player.tscn        # Mag-Boy (CharacterBody2D + Sprite2D + área magnética)
 │   ├── MetalBox.tscn      # Caja metálica (RigidBody2D + Sprite2D)
 │   ├── Button.tscn        # Botón de presión (Area2D)
 │   ├── Door.tscn          # Puerta vinculada a botones (StaticBody2D)
 │   ├── Goal.tscn          # Zona de meta (Area2D)
-│   └── Enemy.tscn         # Patrullero (CharacterBody2D + Sprite2D + HitArea)
+│   ├── Enemy.tscn         # Dron Centinela volador (CharacterBody2D + HitArea)
+│   ├── Collectible.tscn   # Engranaje dorado (Area2D)
+│   ├── AcidPool.tscn      # Pozo de ácido (Area2D, Hazard)
+│   └── Laser.tscn         # Láser de seguridad parpadeante (Area2D, Hazard)
 ├── scripts/
-│   ├── Player.gd          # Movimiento, magnetismo, respawn, audio
+│   ├── Player.gd          # Movimiento, magnetismo, rayos, respawn, audio
 │   ├── MetalBox.gd        # Selección de la caja (tinte)
 │   ├── Button.gd          # Detección de presión y notificación al target
 │   ├── Door.gd            # Lógica AND de botones (required_presses)
 │   ├── Goal.gd            # Trigger de fin de nivel
-│   ├── Enemy.gd           # Patrullaje + daño al jugador + muerte por caja
+│   ├── Enemy.gd           # Dron volador: patrulla + daño + muerte por caja
+│   ├── Collectible.gd     # Engranaje recogible
+│   ├── Hazard.gd          # Peligro (ácido/láser) que respawnea
 │   ├── MainMenu.gd        # Botones del menú
-│   ├── Level.gd           # Flujo del nivel (música, R, Esc)
+│   ├── Level.gd           # Flujo del nivel (HUD, victoria/derrota, R, Esc)
+│   ├── Game.gd            # Autoload de estado (engranajes, señales)
 │   ├── AudioManager.gd    # Autoload de audio (SFX + música)
 │   └── PerfOverlay.gd     # Autoload de métricas (mini + panel)
 ├── tools/
 │   └── gen_assets.py      # Generador de sprites + fondo + audio
 └── docs/
+    ├── CODIGO.md          # Explicación del código (arquitectura, scripts, flujo)
     └── SLIDES_METRICAS.md # Guion de slides + cómo medir FPS/RAM/render
 ```
 
@@ -309,11 +326,11 @@ Verificación frente a `Propuesta de Videojuego` (Magnet-O: Escape de la Fábric
 | Enemigo: Dron Centinela **volador**, patrulla, daño al contacto | ✅ | Ahora vuela (antes caminaba). |
 | Meta / "Salida Segura" + reinicio al recibir daño | ✅ | Meta + respawn. |
 | Estilo industrial (óxido, neón, azul/rojo saturado) | ✅ | Sprites + fondo de fábrica. Arte **temporal**, no el pixel-art final. |
-| Menú principal + pantalla de victoria | ✅ | Falta pantalla de **derrota** explícita (hoy: respawn directo). |
-| Info técnica en ejecución (FPS/ms/RAM) | ✅ | Mini siempre visible + panel (`` ` ``/F3). |
-| Sonido básico (salto, imán, música) | ✅ | WAVs sintetizados (temporales). |
-| **Coleccionables (engranajes dorados)** | ❌ | No implementado aún. |
-| **Peligros: láseres de seguridad / ácido** | ❌ | Solo el dron causa daño por ahora. |
+| Menú principal + victoria + derrota | ✅ | Menú, panel de victoria (con engranajes) y feedback de derrota (flash + "¡REINICIANDO!"). |
+| Info técnica en ejecución (FPS/ms/RAM) | ✅ | Mini siempre visible + panel completo (`Tab`). |
+| Sonido básico (salto, imán, música) | ✅ | WAVs sintetizados (temporales) + pickup y daño. |
+| Coleccionables (engranajes dorados) | ✅ | 3 engranajes + contador en el HUD. |
+| Peligros: láseres de seguridad / ácido | ✅ | Láser parpadeante + pozo de ácido en el tramo final. |
 | **Pixel art final + fondos definitivos** | ❌ | Arte actual es temporal generado por código. |
 | **4 habitaciones progresivas (tutorial→final)** | ⚠️ | Hay 1 nivel que combina las mecánicas (el MVP permite "1 nivel grande o 3 habitaciones"). |
 | Tilemaps para el escenario | ⚠️ | Hoy `Polygon2D`; pendiente opcional. |
@@ -329,4 +346,4 @@ Verificación frente a `Propuesta de Videojuego` (Magnet-O: Escape de la Fábric
 | 1 · Prototipo de mecánica | ✅ | Movimiento de plataforma + magnetismo con polaridad dual. |
 | 2 · Cajas e interacción | ✅ | `MetalBox` con selección y ciclo de objetivo (`Shift`). |
 | **3 · Nivel y enemigos** *(12/05/2026)* | ✅ | Botones, puertas con lógica AND, zona de meta, enemigo patrullero (daño + muerte por caja), respawn, **Nivel 1 jugable de inicio a fin**. Pendiente opcional: migrar el escenario a Tilemap (hoy usa polígonos). |
-| **4 · Pulido y entrega** | 🟡 *en curso* | Hecho: **arte industrial** (sprites + fondo de fábrica + escenario recoloreado), **dron volador**, **animación procedural**, **audio**, **Menú Principal**, **info técnica en ejecución** (mini + panel `` ` ``/F3), guía de export y de slides. Pendiente: **pixel-art definitivo**, coleccionables y peligros (láser/ácido), pantalla de derrota, exportar el `.exe`/`.app`, y rellenar los slides con tus números. |
+| **4 · Pulido y entrega** | 🟡 *en curso* | Hecho: **arte industrial** (sprites + fondo + escenario), **dron volador**, **animación procedural**, **rayos magnéticos**, **engranajes coleccionables**, **peligros** (láser + ácido), **victoria/derrota**, **audio**, **Menú Principal**, **info técnica en ejecución**. Pendiente: **pixel-art definitivo**, exportar el `.exe`/`.app`, y rellenar los slides con tus números. |

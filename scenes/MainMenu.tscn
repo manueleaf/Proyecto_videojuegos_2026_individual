@@ -67,4 +67,4 @@ theme_override_colors/font_color = Color(0.6, 0.62, 0.7, 1)
 theme_override_font_sizes/font_size = 14
 horizontal_alignment = 1
 vertical_alignment = 1
-text = "A/D o Flechas: mover    Espacio: saltar    J: atraer    K: repeler    Shift: cambiar caja    Acento grave (`) o F3: info tecnica    R: reiniciar    Esc: menu"
+text = "A/D o Flechas: mover    Espacio: saltar    J: atraer    K: repeler    Shift: cambiar caja    Tab: panel tecnico    R: reiniciar    Esc: menu"

@@ -98,7 +98,7 @@ A / D  o  Flechas        Mover                Espacio / W / Up       Saltar
 J  o  Clic Izquierdo     Polaridad AZUL (atraer caja seleccionada)
 K  o  Clic Derecho       Polaridad ROJA (repeler todas en rango)
 Shift (atrayendo)        Cambiar de caja objetivo
-Tecla grave (`) o F3     Info tecnica         R  Reiniciar         Esc  Menu"
+Tab = panel tecnico       R = reiniciar       Esc = menu"
 
 [node name="Hint1" type="Label" parent="HUD"]
 offset_left = 16.0

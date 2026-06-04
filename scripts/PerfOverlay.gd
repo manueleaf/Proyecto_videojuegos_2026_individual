@@ -3,9 +3,9 @@ extends CanvasLayer
 ## Autoload "PerfOverlay": información técnica EN EJECUCIÓN.
 ##
 ## - Lectura mini SIEMPRE visible (arriba a la derecha): FPS, ms/frame, RAM.
-## - Panel completo que se muestra/oculta con la tecla grave (`) o F3.
-##   (En macOS F3 lo intercepta Mission Control, por eso el acento grave es la
-##    tecla principal.)
+## - Panel completo que se muestra/oculta con Tab (tambien ` o F3).
+##   (En macOS usar Tab: F3 lo intercepta Mission Control y el acento grave es
+##    tecla muerta en teclados español/latino.)
 ##
 ## Datos vía la API `Performance` de Godot: FPS, ms por frame, CPU/física,
 ## RAM estática, VRAM, draw calls y objetos en frame.
@@ -50,7 +50,7 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_QUOTELEFT or event.keycode == KEY_F3:
+		if event.keycode == KEY_TAB or event.keycode == KEY_QUOTELEFT or event.keycode == KEY_F3:
 			_shown = not _shown
 			_panel.visible = _shown
 			_label.visible = _shown
@@ -62,7 +62,7 @@ func _process(_delta: float) -> void:
 	var ram_mb: float = Performance.get_monitor(Performance.MEMORY_STATIC) / 1048576.0
 
 	# Mini lectura (siempre)
-	_mini.text = "FPS %d   %.1f ms   RAM %d MB   [ ` ]" % [fps, frame_ms, int(ram_mb)]
+	_mini.text = "FPS %d   %.1f ms   RAM %d MB   [Tab=mas]" % [fps, frame_ms, int(ram_mb)]
 
 	if not _shown:
 		return
@@ -74,7 +74,7 @@ func _process(_delta: float) -> void:
 	var draw_calls: int = int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
 	var objects: int = int(Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME))
 
-	_label.text = "MAGNET-O - Rendimiento  ( ` / F3 )\n" \
+	_label.text = "MAGNET-O - Rendimiento  ( Tab )\n" \
 		+ "FPS: %d\n" % fps \
 		+ "Frame: %.2f ms\n" % frame_ms \
 		+ "CPU (proceso): %.2f ms\n" % proc_ms \
