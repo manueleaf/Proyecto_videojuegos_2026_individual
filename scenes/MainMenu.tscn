@@ -17,9 +17,9 @@ color = Color(0.09, 0.11, 0.16, 1)
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -320.0
-offset_top = 130.0
+offset_top = 90.0
 offset_right = 320.0
-offset_bottom = 220.0
+offset_bottom = 180.0
 theme_override_colors/font_color = Color(0.75, 0.85, 1, 1)
 theme_override_font_sizes/font_size = 72
 horizontal_alignment = 1
@@ -30,9 +30,9 @@ text = "MAGNET-O"
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -320.0
-offset_top = 222.0
+offset_top = 182.0
 offset_right = 320.0
-offset_bottom = 252.0
+offset_bottom = 212.0
 theme_override_colors/font_color = Color(0.7, 0.72, 0.8, 1)
 theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
@@ -42,19 +42,39 @@ text = "Plataformas con polaridad magnetica"
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -120.0
-offset_top = 330.0
+offset_top = 270.0
 offset_right = 120.0
-offset_bottom = 378.0
+offset_bottom = 314.0
 theme_override_font_sizes/font_size = 22
 text = "Jugar"
+
+[node name="Continue" type="Button" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 324.0
+offset_right = 120.0
+offset_bottom = 368.0
+theme_override_font_sizes/font_size = 22
+text = "Continuar"
+
+[node name="Debug" type="Button" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 378.0
+offset_right = 120.0
+offset_bottom = 422.0
+theme_override_font_sizes/font_size = 22
+text = "Debug"
 
 [node name="Quit" type="Button" parent="."]
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -120.0
-offset_top = 392.0
+offset_top = 432.0
 offset_right = 120.0
-offset_bottom = 440.0
+offset_bottom = 476.0
 theme_override_font_sizes/font_size = 22
 text = "Salir"
 
