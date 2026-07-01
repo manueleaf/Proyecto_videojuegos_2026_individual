@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cwssr66c0codc"]
+
+[ext_resource type="Script" uid="uid://bybdjm086p3bt" path="res://scripts/MagneticWall.gd" id="1_5s650"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lw72v"]
+size = Vector2(20, 200)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5y8v4"]
+size = Vector2(120, 180)
+
+[node name="MagneticWall" type="StaticBody2D" unique_id=702983495 groups=["magnetic_wall_root"]]
+collision_layer = 17
+collision_mask = 0
+script = ExtResource("1_5s650")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1002175437]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=228712250]
+shape = SubResource("RectangleShape2D_lw72v")
+
+[node name="MagnetZone" type="Area2D" parent="." unique_id=2097234288]
+collision_layer = 16
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MagnetZone" unique_id=1422743428]
+shape = SubResource("RectangleShape2D_5y8v4")

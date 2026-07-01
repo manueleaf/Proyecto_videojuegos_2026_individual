@@ -14,6 +14,15 @@ extends CharacterBody2D
 @export var magnet_falloff: float = 0.35  # 0 = fuerza constante, 1 = decae linealmente con distancia
 @export var debug_magnetism: bool = false
 
+# Paredes magneticas
+@export var wall_dash_impulse: float = 650.0
+@export var wall_repel_impulse: float = 700.0
+@export var wall_repel_boost_y: float = -320.0
+@export var wall_cling_pull: float = 260.0
+@export var wall_action_cooldown: float = 0.35
+
+var _wall_cooldown_timer: float = 0.0
+
 enum Polarity { NONE, ATTRACT, REPEL }
 var current_polarity: int = Polarity.NONE
 var selected_box: RigidBody2D = null  # Caja actualmente atraida
@@ -53,6 +62,7 @@ func _physics_process(delta: float) -> void:
 	_handle_polarity_input()
 	_update_target_selection()
 	_apply_magnetism()
+	_process_wall_magnetism(delta)
 	_update_visual_feedback()
 	move_and_slide()
 	_update_sprite_anim(delta)
@@ -155,6 +165,58 @@ func _get_metal_bodies_in_range() -> Array:
 	return result
 
 
+func _get_walls_in_range() -> Array:
+	var result: Array = []
+	for body in magnet_area.get_overlapping_bodies():
+		if body is StaticBody2D and body.is_in_group("magnetic_wall_root"):
+			result.append(body)
+	return result
+
+
+func _closest_wall(walls: Array) -> StaticBody2D:
+	var closest: StaticBody2D = null
+	var closest_dist_sq: float = INF
+	for w in walls:
+		var d_sq: float = (w.global_position - global_position).length_squared()
+		if d_sq < closest_dist_sq:
+			closest = w
+			closest_dist_sq = d_sq
+	return closest
+
+
+func _process_wall_magnetism(delta: float) -> void:
+	if _wall_cooldown_timer > 0.0:
+		_wall_cooldown_timer -= delta
+
+	var walls: Array = _get_walls_in_range()
+	if walls.is_empty():
+		return
+
+	var wall: StaticBody2D = _closest_wall(walls)
+	var dir: Vector2 = (wall.global_position - global_position).normalized()
+
+	# ATRAER
+	if Input.is_action_just_pressed("attract") and _wall_cooldown_timer <= 0.0:
+		if not is_on_floor():
+			velocity = dir * wall_dash_impulse
+			_wall_cooldown_timer = wall_action_cooldown
+	elif Input.is_action_pressed("attract") and is_on_floor():
+		velocity.x = move_toward(velocity.x, dir.x * wall_cling_pull, wall_cling_pull * delta * 4.0)
+
+	# REPELER
+	if Input.is_action_just_pressed("repel") and _wall_cooldown_timer <= 0.0:
+		var away: Vector2 = -dir
+		if not is_on_floor():
+			velocity = away * wall_repel_impulse
+			velocity.y += wall_repel_boost_y
+		else:
+			velocity.x = away.x * (wall_repel_impulse * 0.4)
+		_wall_cooldown_timer = wall_action_cooldown
+
+	if debug_magnetism:
+		print("[WALL] %s dir=%s cooldown=%.2f" % [wall.name, dir, _wall_cooldown_timer])
+
+
 func _closest_body(bodies: Array) -> RigidBody2D:
 	var closest: RigidBody2D = null
 	var closest_dist_sq: float = INF
@@ -246,4 +308,4 @@ func _draw() -> void:
 		var p: Vector2 = to_local(b.global_position)
 		draw_line(Vector2.ZERO, p, Color(col.r, col.g, col.b, 0.22), 6.0)
 		draw_line(Vector2.ZERO, p, Color(col.r, col.g, col.b, 0.9), 2.0)
-		draw_circle(p, 6.0, Color(col.r, col.g, col.b, 0.45))
+		draw_circle(p, 6.0, Color(col.r, col.g, col.b, 0.45)) 
