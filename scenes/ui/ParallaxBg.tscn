@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://diuhx7on6cot5"]
+
+[ext_resource type="Script" path="res://scripts/ui/ParallaxBg.gd" id="1_bg"]
+[ext_resource type="Texture2D" path="res://assets/sprites/parallax/far.png" id="2_far"]
+[ext_resource type="Texture2D" path="res://assets/sprites/parallax/mid.png" id="3_mid"]
+[ext_resource type="Texture2D" path="res://assets/sprites/parallax/near.png" id="4_near"]
+
+[node name="ParallaxBg" type="ParallaxBackground"]
+layer = -1
+script = ExtResource("1_bg")
+
+[node name="Far" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(1280, 0)
+
+[node name="Tex" type="Sprite2D" parent="Far"]
+centered = false
+texture = ExtResource("2_far")
+
+[node name="Mid" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.5, 0.5)
+motion_mirroring = Vector2(1280, 0)
+
+[node name="Tex" type="Sprite2D" parent="Mid"]
+centered = false
+texture = ExtResource("3_mid")
+
+[node name="Near" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.85, 0.85)
+motion_mirroring = Vector2(1280, 0)
+
+[node name="Tex" type="Sprite2D" parent="Near"]
+centered = false
+texture = ExtResource("4_near")

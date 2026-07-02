@@ -21,12 +21,10 @@ var selected_box: RigidBody2D = null  # Caja actualmente atraida
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 @onready var magnet_area: Area2D = $MagnetArea
-@onready var sprite: Sprite2D = $Sprite
+@onready var sprite: AnimatedSprite2D = $Sprite
 @onready var core: Sprite2D = $Core
 
 var _spawn_position: Vector2
-var _anim_t: float = 0.0
-var _was_on_floor: bool = true
 var _affected: Array = []  # Cajas a las que se dibuja el rayo magnetico
 
 
@@ -55,7 +53,7 @@ func _physics_process(delta: float) -> void:
 	_apply_magnetism()
 	_update_visual_feedback()
 	move_and_slide()
-	_update_sprite_anim(delta)
+	_update_animation()
 	queue_redraw()
 
 
@@ -206,33 +204,22 @@ func _update_visual_feedback() -> void:
 			core.modulate = Color(0.95, 0.85, 0.5, 1.0)  # Ambar (neutro)
 
 
-func _update_sprite_anim(delta: float) -> void:
-	# Animacion procedural barata: vaiven, inclinacion y squash al aterrizar.
-	_anim_t += delta
-	var on_floor: bool = is_on_floor()
+func _update_animation() -> void:
+	# Elige la animacion del AnimatedSprite2D segun el estado de movimiento
+	# y voltea el sprite hacia la direccion de avance.
+	if absf(velocity.x) > 5.0:
+		sprite.flip_h = velocity.x < 0.0
 
-	# Squash al tocar suelo tras estar en el aire.
-	if on_floor and not _was_on_floor:
-		sprite.scale = Vector2(1.18, 0.82)
-	_was_on_floor = on_floor
-	sprite.scale = sprite.scale.lerp(Vector2.ONE, 0.2)
+	var anim: StringName
+	if not is_on_floor():
+		anim = &"jump" if velocity.y < 0.0 else &"fall"
+	elif absf(velocity.x) > 15.0:
+		anim = &"walk"
+	else:
+		anim = &"idle"
 
-	# Vaiven vertical (mas marcado al caminar, suave en reposo, nulo en el aire).
-	var amp: float = 0.0
-	var freq: float = 3.0
-	if on_floor:
-		if absf(velocity.x) > 10.0:
-			amp = 1.5
-			freq = 14.0
-		else:
-			amp = 0.8
-	var bob: float = sin(_anim_t * freq) * amp
-	sprite.position.y = bob
-	core.position.y = 5.0 + bob
-
-	# Inclinacion hacia la direccion de movimiento (solo en suelo).
-	var lean: float = clampf(velocity.x / speed, -1.0, 1.0) * 0.08
-	sprite.rotation = lerp(sprite.rotation, lean if on_floor else 0.0, 0.2)
+	if sprite.animation != anim:
+		sprite.play(anim)
 
 
 func _draw() -> void:
