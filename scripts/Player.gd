@@ -9,6 +9,13 @@ extends CharacterBody2D
 @export var friction: float = 1800.0
 @export var air_control: float = 0.6
 
+# Game feel: coyote time + jump buffer
+@export var coyote_time: float = 0.12
+@export var jump_buffer_time: float = 0.12
+
+var _coyote_timer: float = 0.0
+var _jump_buffer_timer: float = 0.0
+
 # Magnetismo
 @export var magnet_force: float = 1800.0
 @export var magnet_falloff: float = 0.35  # 0 = fuerza constante, 1 = decae linealmente con distancia
@@ -49,6 +56,8 @@ func respawn() -> void:
 	global_position = _spawn_position
 	velocity = Vector2.ZERO
 	current_polarity = Polarity.NONE
+	_coyote_timer = 0.0
+	_jump_buffer_timer = 0.0
 	_set_selected_box(null)
 	Audio.set_magnet_active(false)
 	Audio.play_sfx("hurt")
@@ -57,7 +66,7 @@ func respawn() -> void:
 
 func _physics_process(delta: float) -> void:
 	_handle_gravity(delta)
-	_handle_jump()
+	_handle_jump(delta)
 	_handle_horizontal_movement(delta)
 	_handle_polarity_input()
 	_update_target_selection()
@@ -74,10 +83,29 @@ func _handle_gravity(delta: float) -> void:
 		velocity.y += gravity * delta
 
 
-func _handle_jump() -> void:
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+func _handle_jump(delta: float) -> void:
+	# Jump buffer: si se presiono saltar, guardamos el "recuerdo" por un rato,
+	# aunque todavia no estemos en el suelo (ej. justo antes de aterrizar).
+	if Input.is_action_just_pressed("jump"):
+		_jump_buffer_timer = jump_buffer_time
+	else:
+		_jump_buffer_timer -= delta
+
+	# Coyote time: mientras estamos en el suelo se resetea al maximo; en el
+	# aire va bajando, permitiendo saltar un poco despues de salir de una
+	# plataforma (perdona el timing de caer sin haber saltado a tiempo).
+	if is_on_floor():
+		_coyote_timer = coyote_time
+	else:
+		_coyote_timer -= delta
+
+	# Si hay un salto "recordado" Y seguimos dentro del margen de coyote
+	# time, ejecutamos el salto.
+	if _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
 		velocity.y = jump_velocity
 		Audio.play_sfx("jump")
+		_jump_buffer_timer = 0.0
+		_coyote_timer = 0.0
 
 
 func _handle_horizontal_movement(delta: float) -> void:
@@ -308,4 +336,4 @@ func _draw() -> void:
 		var p: Vector2 = to_local(b.global_position)
 		draw_line(Vector2.ZERO, p, Color(col.r, col.g, col.b, 0.22), 6.0)
 		draw_line(Vector2.ZERO, p, Color(col.r, col.g, col.b, 0.9), 2.0)
-		draw_circle(p, 6.0, Color(col.r, col.g, col.b, 0.45)) 
+		draw_circle(p, 6.0, Color(col.r, col.g, col.b, 0.45))
