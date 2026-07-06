@@ -13,8 +13,6 @@ collision_layer = 17
 collision_mask = 0
 script = ExtResource("1_5s650")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1002175437]
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=228712250]
 shape = SubResource("RectangleShape2D_lw72v")
 
@@ -24,3 +22,10 @@ collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MagnetZone" unique_id=1422743428]
 shape = SubResource("RectangleShape2D_5y8v4")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=729615149]
+offset_left = -10.0
+offset_top = -100.0
+offset_right = 10.0
+offset_bottom = 100.0
+color = Color(0.22745098, 0.41568628, 0.5411765, 1)

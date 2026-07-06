@@ -94,4 +94,4 @@ func _die() -> void:
 	tw.tween_property(sprite, "scale", Vector2(1.7, 1.7), 0.2)
 	tw.tween_property(sprite, "modulate:a", 0.0, 0.2)
 	tw.set_parallel(false)
-	tw.tween_callback(queue_free)
+	tw.tween_callback(queue_free)	

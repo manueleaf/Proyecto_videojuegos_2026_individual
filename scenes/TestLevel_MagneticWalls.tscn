@@ -95,6 +95,10 @@ Shift (mientras atraes)  -  Cambiar de caja"
 
 [node name="Player" parent="." unique_id=134175854 instance=ExtResource("1_fjjk5")]
 position = Vector2(-800, 200)
+debug_magnetism = false
+wall_dash_impulse = 500.0
+wall_repel_impulse = 550.0
+wall_repel_boost_y = -180.0
 
 [node name="MagneticWall" parent="." unique_id=702983495 instance=ExtResource("2_fjjk5")]
 position = Vector2(150, 300)
