@@ -253,6 +253,39 @@ def gen_gear():
     save_sprite(img, "gear.png")
 
 
+# ------------------------------------------------- texturas para VFX (particulas)
+def gen_fx():
+    # Chispa / punto suave (blanco, para teñir por codigo con modulate).
+    s = 16
+    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    for y in range(s):
+        for x in range(s):
+            dx = x - s / 2 + 0.5
+            dy = y - s / 2 + 0.5
+            dist = math.hypot(dx, dy) / (s / 2)
+            a = max(0.0, 1.0 - dist)
+            img.putpixel((x, y), (255, 255, 255, int(255 * a * a)))
+    save_sprite(img, "fx_spark.png")
+
+    # Pieza de metal (metralla del robot al explotar).
+    c = 8
+    img = Image.new("RGBA", (c, c), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.rectangle([0, 0, c - 1, c - 1], fill=METAL, outline=OUT)
+    d.rectangle([1, 1, 3, 3], fill=METAL_L)          # brillo
+    d.rectangle([c - 3, c - 3, c - 1, c - 1], fill=METAL_D)  # sombra
+    save_sprite(img, "fx_chunk.png")
+
+    # Gota (líquido; blanca para teñir de verde en el ácido / derretido).
+    w, h = 10, 14
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.ellipse([1, 5, 8, 13], fill=(255, 255, 255, 255))     # cuerpo
+    d.polygon([(4, 0), (1, 6), (8, 6)], fill=(255, 255, 255, 255))  # punta
+    d.ellipse([3, 7, 5, 9], fill=(255, 255, 255, 255))
+    save_sprite(img, "fx_drop.png")
+
+
 # ---------------------------------------------- fondo industrial (grande) ----
 def _vgrad(w, h, top, bottom):
     ys = np.linspace(0, 1, h)
@@ -411,6 +444,7 @@ def gen_hurt_wav():
 if __name__ == "__main__":
     gen_player()
     gen_player_sheet()
+    gen_fx()
     gen_box()
     gen_drone()
     gen_core()

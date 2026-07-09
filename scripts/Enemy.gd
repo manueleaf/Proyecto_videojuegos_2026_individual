@@ -73,7 +73,7 @@ func _on_body_entered(body: Node) -> void:
 				print("[DRON] Destruido por impacto del jugador")
 			_die()
 		elif body.has_method("respawn"):
-			body.respawn()
+			body.respawn("enemy")
 		return
 
 	if body.is_in_group("metal_box") and body is RigidBody2D:
