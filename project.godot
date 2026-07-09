@@ -20,6 +20,8 @@ config/icon="res://icon.svg"
 Audio="*res://scripts/AudioManager.gd"
 PerfOverlay="*res://scripts/PerfOverlay.gd"
 Game="*res://scripts/Game.gd"
+Fx="*res://scripts/ui/Fx.gd"
+Pause="*res://scripts/ui/PauseManager.gd"
 
 [display]
 
