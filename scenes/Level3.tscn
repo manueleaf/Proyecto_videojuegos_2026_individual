@@ -1,15 +1,16 @@
-[gd_scene load_steps=14 format=3 uid="uid://lv3magneto001"]
+[gd_scene format=3 uid="uid://bu0iavm43eqq"]
 
-[ext_resource type="Script" path="res://scripts/Level.gd" id="0_level"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bg_factory.png" id="1_bg"]
-[ext_resource type="PackedScene" path="res://scenes/HUD.tscn" id="2_hud"]
-[ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="3_player"]
-[ext_resource type="PackedScene" path="res://scenes/MetalBox.tscn" id="4_box"]
-[ext_resource type="PackedScene" path="res://scenes/Button.tscn" id="5_btn"]
-[ext_resource type="PackedScene" path="res://scenes/Door.tscn" id="6_door"]
-[ext_resource type="PackedScene" path="res://scenes/Laser.tscn" id="7_laser"]
-[ext_resource type="PackedScene" path="res://scenes/Collectible.tscn" id="8_gear"]
-[ext_resource type="PackedScene" path="res://scenes/Goal.tscn" id="9_goal"]
+[ext_resource type="Script" uid="uid://dntekasjsd5he" path="res://scripts/Level.gd" id="0_level"]
+[ext_resource type="Texture2D" uid="uid://bcg1otsmrxmb4" path="res://assets/sprites/bg_factory.png" id="1_bg"]
+[ext_resource type="PackedScene" uid="uid://daotiwp7fn81h" path="res://scenes/HUD.tscn" id="2_hud"]
+[ext_resource type="PackedScene" uid="uid://bwcnaqdf0jv41" path="res://scenes/Player.tscn" id="3_player"]
+[ext_resource type="PackedScene" uid="uid://damagboybox01" path="res://scenes/MetalBox.tscn" id="4_box"]
+[ext_resource type="PackedScene" uid="uid://btnmagneto001" path="res://scenes/Button.tscn" id="5_btn"]
+[ext_resource type="PackedScene" uid="uid://drmagneto001x" path="res://scenes/Door.tscn" id="6_door"]
+[ext_resource type="PackedScene" uid="uid://drl2m1e7ma0bj" path="res://scenes/Laser.tscn" id="7_laser"]
+[ext_resource type="PackedScene" uid="uid://df5h0gw1vymvf" path="res://scenes/Collectible.tscn" id="8_gear"]
+[ext_resource type="PackedScene" uid="uid://cp7eulhk4s5a6" path="res://scenes/Goal.tscn" id="9_goal"]
+[ext_resource type="PackedScene" uid="uid://cwssr66c0codc" path="res://scenes/MagneticWall.tscn" id="11_opw0y"]
 
 [sub_resource type="RectangleShape2D" id="GroundShape"]
 size = Vector2(2400, 60)
@@ -20,104 +21,103 @@ size = Vector2(60, 800)
 [sub_resource type="RectangleShape2D" id="PlatformShape"]
 size = Vector2(100, 20)
 
-[node name="Level3" type="Node2D"]
+[node name="Level3" type="Node2D" unique_id=2141125625]
 script = ExtResource("0_level")
 level_index = 2
 
-[node name="Background" type="Polygon2D" parent="."]
+[node name="Background" type="Polygon2D" parent="." unique_id=2024375292]
 color = Color(0.04, 0.04, 0.06, 1)
 polygon = PackedVector2Array(-1400, -600, 1400, -600, 1400, 600, -1400, 600)
 
-[node name="BgImage" type="Sprite2D" parent="."]
+[node name="BgImage" type="Sprite2D" parent="." unique_id=572355030]
 texture_filter = 1
 position = Vector2(0, 120)
 texture = ExtResource("1_bg")
 
-[node name="Ground" type="StaticBody2D" parent="."]
+[node name="Ground" type="StaticBody2D" parent="." unique_id=1573436995]
 position = Vector2(0, 360)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=480603919]
 shape = SubResource("GroundShape")
 
-[node name="Visual" type="Polygon2D" parent="Ground"]
+[node name="Visual" type="Polygon2D" parent="Ground" unique_id=1567925161]
 color = Color(0.2, 0.18, 0.16, 1)
 polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, 30, -1200, 30)
 
-[node name="Edge" type="Polygon2D" parent="Ground"]
+[node name="Edge" type="Polygon2D" parent="Ground" unique_id=1816410212]
 color = Color(0.55, 0.42, 0.16, 1)
 polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, -26, -1200, -26)
 
-[node name="LeftWall" type="StaticBody2D" parent="."]
+[node name="LeftWall" type="StaticBody2D" parent="." unique_id=1853678075]
 position = Vector2(-1170, 0)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall" unique_id=1688179954]
 shape = SubResource("WallShape")
 
-[node name="Visual" type="Polygon2D" parent="LeftWall"]
+[node name="Visual" type="Polygon2D" parent="LeftWall" unique_id=202098761]
 color = Color(0.18, 0.16, 0.15, 1)
 polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
 
-[node name="RightWall" type="StaticBody2D" parent="."]
+[node name="RightWall" type="StaticBody2D" parent="." unique_id=1766527868]
 position = Vector2(1170, 0)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall" unique_id=1479616070]
 shape = SubResource("WallShape")
 
-[node name="Visual" type="Polygon2D" parent="RightWall"]
+[node name="Visual" type="Polygon2D" parent="RightWall" unique_id=1103443300]
 color = Color(0.18, 0.16, 0.15, 1)
 polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
 
-[node name="Platform" type="StaticBody2D" parent="."]
+[node name="Platform" type="StaticBody2D" parent="." unique_id=106503241]
 position = Vector2(-400, 290)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform" unique_id=1971646437]
 shape = SubResource("PlatformShape")
 
-[node name="Visual" type="Polygon2D" parent="Platform"]
+[node name="Visual" type="Polygon2D" parent="Platform" unique_id=818778266]
 color = Color(0.24, 0.22, 0.2, 1)
 polygon = PackedVector2Array(-50, -10, 50, -10, 50, 10, -50, 10)
 
-[node name="Edge" type="Polygon2D" parent="Platform"]
+[node name="Edge" type="Polygon2D" parent="Platform" unique_id=678991583]
 color = Color(0.55, 0.42, 0.16, 1)
 polygon = PackedVector2Array(-50, -10, 50, -10, 50, -7, -50, -7)
 
-[node name="HUD" parent="." instance=ExtResource("2_hud")]
+[node name="HUD" parent="." unique_id=84143620 instance=ExtResource("2_hud")]
 
-[node name="Player" parent="." instance=ExtResource("3_player")]
+[node name="Player" parent="." unique_id=1161703587 instance=ExtResource("3_player")]
 position = Vector2(-1000, 240)
 
-[node name="Box1" parent="." instance=ExtResource("4_box")]
+[node name="Box1" parent="." unique_id=1316445039 instance=ExtResource("4_box")]
 position = Vector2(-780, 310)
 
-[node name="Box2" parent="." instance=ExtResource("4_box")]
+[node name="Box2" parent="." unique_id=1163873202 instance=ExtResource("4_box")]
 position = Vector2(-660, 310)
 
-[node name="Button2b" parent="." instance=ExtResource("5_btn")]
+[node name="Button2b" parent="." unique_id=1073774536 instance=ExtResource("5_btn")]
 position = Vector2(-400, 280)
 target_path = NodePath("../Door2")
 requires_metal_box = true
 
-[node name="Button2a" parent="." instance=ExtResource("5_btn")]
+[node name="Button2a" parent="." unique_id=1738201879 instance=ExtResource("5_btn")]
 position = Vector2(-100, 330)
 target_path = NodePath("../Door2")
 
-[node name="Door2" parent="." instance=ExtResource("6_door")]
+[node name="Door2" parent="." unique_id=73011842 instance=ExtResource("6_door")]
 position = Vector2(150, 280)
 auto_close = false
 required_presses = 2
 
-[node name="Gear1" parent="." instance=ExtResource("8_gear")]
+[node name="Gear1" parent="." unique_id=1471446579 instance=ExtResource("8_gear")]
 position = Vector2(300, 295)
 
-[node name="Laser" parent="." instance=ExtResource("7_laser")]
+[node name="Laser" parent="." unique_id=1964734037 instance=ExtResource("7_laser")]
 position = Vector2(520, 250)
 
-[node name="Gear2" parent="." instance=ExtResource("8_gear")]
+[node name="Gear2" parent="." unique_id=939060183 instance=ExtResource("8_gear")]
 position = Vector2(720, 300)
 
-[node name="Goal" parent="." instance=ExtResource("9_goal")]
+[node name="Goal" parent="." unique_id=1851984108 instance=ExtResource("9_goal")]
 position = Vector2(1000, 280)
+
+[node name="MagneticWall" parent="." unique_id=702983495 instance=ExtResource("11_opw0y")]
+position = Vector2(750, 180)

@@ -1,16 +1,17 @@
-[gd_scene load_steps=15 format=3 uid="uid://lv1magneto001"]
+[gd_scene format=3 uid="uid://bs0iavm43eqq"]
 
-[ext_resource type="Script" path="res://scripts/Level.gd" id="0_level"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bg_factory.png" id="7_bg"]
-[ext_resource type="PackedScene" path="res://scenes/Collectible.tscn" id="8_gear"]
-[ext_resource type="PackedScene" path="res://scenes/AcidPool.tscn" id="9_acid"]
-[ext_resource type="PackedScene" path="res://scenes/Laser.tscn" id="10_laser"]
-[ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="1_player"]
-[ext_resource type="PackedScene" path="res://scenes/MetalBox.tscn" id="2_box"]
-[ext_resource type="PackedScene" path="res://scenes/Button.tscn" id="3_btn"]
-[ext_resource type="PackedScene" path="res://scenes/Door.tscn" id="4_door"]
-[ext_resource type="PackedScene" path="res://scenes/Goal.tscn" id="5_goal"]
-[ext_resource type="PackedScene" path="res://scenes/Enemy.tscn" id="6_enemy"]
+[ext_resource type="Script" uid="uid://dntekasjsd5he" path="res://scripts/Level.gd" id="0_level"]
+[ext_resource type="PackedScene" uid="uid://bwcnaqdf0jv41" path="res://scenes/Player.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://damagboybox01" path="res://scenes/MetalBox.tscn" id="2_box"]
+[ext_resource type="PackedScene" uid="uid://btnmagneto001" path="res://scenes/Button.tscn" id="3_btn"]
+[ext_resource type="PackedScene" uid="uid://drmagneto001x" path="res://scenes/Door.tscn" id="4_door"]
+[ext_resource type="PackedScene" uid="uid://cp7eulhk4s5a6" path="res://scenes/Goal.tscn" id="5_goal"]
+[ext_resource type="PackedScene" uid="uid://r7307jetm5aa" path="res://scenes/Enemy.tscn" id="6_enemy"]
+[ext_resource type="Texture2D" uid="uid://bcg1otsmrxmb4" path="res://assets/sprites/bg_factory.png" id="7_bg"]
+[ext_resource type="PackedScene" uid="uid://df5h0gw1vymvf" path="res://scenes/Collectible.tscn" id="8_gear"]
+[ext_resource type="PackedScene" uid="uid://cidmagneto01x" path="res://scenes/AcidPool.tscn" id="9_acid"]
+[ext_resource type="PackedScene" uid="uid://drl2m1e7ma0bj" path="res://scenes/Laser.tscn" id="10_laser"]
+[ext_resource type="PackedScene" uid="uid://cwssr66c0codc" path="res://scenes/MagneticWall.tscn" id="12_jxjwb"]
 
 [sub_resource type="RectangleShape2D" id="GroundShape"]
 size = Vector2(2400, 60)
@@ -21,73 +22,69 @@ size = Vector2(60, 800)
 [sub_resource type="RectangleShape2D" id="SmallPlatformShape"]
 size = Vector2(100, 20)
 
-[node name="Level1" type="Node2D"]
+[node name="Level1" type="Node2D" unique_id=1065070324]
 script = ExtResource("0_level")
 
-[node name="Background" type="Polygon2D" parent="."]
+[node name="Background" type="Polygon2D" parent="." unique_id=1870584554]
 color = Color(0.04, 0.04, 0.06, 1)
 polygon = PackedVector2Array(-1400, -600, 1400, -600, 1400, 600, -1400, 600)
 
-[node name="BgImage" type="Sprite2D" parent="."]
+[node name="BgImage" type="Sprite2D" parent="." unique_id=1052210312]
 texture_filter = 1
 position = Vector2(0, 120)
 texture = ExtResource("7_bg")
 
-[node name="Ground" type="StaticBody2D" parent="."]
+[node name="Ground" type="StaticBody2D" parent="." unique_id=1996768968]
 position = Vector2(0, 360)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=415606216]
 shape = SubResource("GroundShape")
 
-[node name="Visual" type="Polygon2D" parent="Ground"]
+[node name="Visual" type="Polygon2D" parent="Ground" unique_id=287188353]
 color = Color(0.2, 0.18, 0.16, 1)
 polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, 30, -1200, 30)
 
-[node name="Edge" type="Polygon2D" parent="Ground"]
+[node name="Edge" type="Polygon2D" parent="Ground" unique_id=153079258]
 color = Color(0.55, 0.42, 0.16, 1)
 polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, -26, -1200, -26)
 
-[node name="LeftWall" type="StaticBody2D" parent="."]
+[node name="LeftWall" type="StaticBody2D" parent="." unique_id=1259588445]
 position = Vector2(-1170, 0)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall" unique_id=24259095]
 shape = SubResource("WallShape")
 
-[node name="Visual" type="Polygon2D" parent="LeftWall"]
+[node name="Visual" type="Polygon2D" parent="LeftWall" unique_id=430322575]
 color = Color(0.18, 0.16, 0.15, 1)
 polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
 
-[node name="RightWall" type="StaticBody2D" parent="."]
+[node name="RightWall" type="StaticBody2D" parent="." unique_id=119488061]
 position = Vector2(1170, 0)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall" unique_id=1172104283]
 shape = SubResource("WallShape")
 
-[node name="Visual" type="Polygon2D" parent="RightWall"]
+[node name="Visual" type="Polygon2D" parent="RightWall" unique_id=354160687]
 color = Color(0.18, 0.16, 0.15, 1)
 polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
 
-[node name="SmallPlatform" type="StaticBody2D" parent="."]
+[node name="SmallPlatform" type="StaticBody2D" parent="." unique_id=411030208]
 position = Vector2(350, 290)
-collision_layer = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SmallPlatform"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SmallPlatform" unique_id=1225010294]
 shape = SubResource("SmallPlatformShape")
 
-[node name="Visual" type="Polygon2D" parent="SmallPlatform"]
+[node name="Visual" type="Polygon2D" parent="SmallPlatform" unique_id=972066123]
 color = Color(0.24, 0.22, 0.2, 1)
 polygon = PackedVector2Array(-50, -10, 50, -10, 50, 10, -50, 10)
 
-[node name="Edge" type="Polygon2D" parent="SmallPlatform"]
+[node name="Edge" type="Polygon2D" parent="SmallPlatform" unique_id=1377077333]
 color = Color(0.55, 0.42, 0.16, 1)
 polygon = PackedVector2Array(-50, -10, 50, -10, 50, -7, -50, -7)
 
-[node name="HUD" type="CanvasLayer" parent="."]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1584361776]
 
-[node name="Controls" type="Label" parent="HUD"]
+[node name="Controls" type="Label" parent="HUD" unique_id=178323908]
 offset_left = 16.0
 offset_top = 12.0
 offset_right = 620.0
@@ -100,7 +97,7 @@ K  o  Clic Derecho       Polaridad ROJA (repeler todas en rango)
 Shift (atrayendo)        Cambiar de caja objetivo
 Tab = panel tecnico       R = reiniciar       Esc = menu"
 
-[node name="Hint1" type="Label" parent="HUD"]
+[node name="Hint1" type="Label" parent="HUD" unique_id=1118585660]
 offset_left = 16.0
 offset_top = 175.0
 offset_right = 720.0
@@ -108,24 +105,25 @@ offset_bottom = 200.0
 theme_override_colors/font_color = Color(0.95, 0.85, 0.55, 1)
 text = "Puzzle 1: coloca la caja sobre el boton rojo para abrir la primera puerta."
 
-[node name="Hint2" type="Label" parent="HUD"]
+[node name="Hint2" type="Label" parent="HUD" unique_id=264442954]
 offset_left = 16.0
 offset_top = 200.0
 offset_right = 760.0
 offset_bottom = 225.0
-theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1)
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
 text = "Puzzle 2: la segunda puerta necesita dos botones presionados al mismo tiempo."
 
-[node name="Hint3" type="Label" parent="HUD"]
+[node name="Hint3" type="Label" parent="HUD" unique_id=144074608]
 offset_left = 16.0
 offset_top = 225.0
 offset_right = 820.0
 offset_bottom = 250.0
-theme_override_colors/font_color = Color(1.0, 0.6, 0.6, 1)
+theme_override_colors/font_color = Color(1, 0.6, 0.6, 1)
 text = "Cuidado: hay un enemigo patrullando. Esquívalo o lánzale una caja (repele con K) para eliminarlo."
 
-[node name="Victory" type="Label" parent="HUD"]
+[node name="Victory" type="Label" parent="HUD" unique_id=926352862]
 visible = false
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -136,12 +134,13 @@ offset_right = 220.0
 offset_bottom = 40.0
 theme_override_colors/font_color = Color(0.95, 0.95, 0.2, 1)
 theme_override_font_sizes/font_size = 36
+text = "¡NIVEL COMPLETADO!"
 horizontal_alignment = 1
 vertical_alignment = 1
-text = "¡NIVEL COMPLETADO!"
 
-[node name="VictorySub" type="Label" parent="HUD"]
+[node name="VictorySub" type="Label" parent="HUD" unique_id=1745253508]
 visible = false
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -152,10 +151,11 @@ offset_right = 280.0
 offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.85, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 18
-horizontal_alignment = 1
 text = "R: reiniciar     Esc: menu"
+horizontal_alignment = 1
 
-[node name="GearLabel" type="Label" parent="HUD"]
+[node name="GearLabel" type="Label" parent="HUD" unique_id=1333879741]
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -160.0
@@ -164,17 +164,19 @@ offset_right = 160.0
 offset_bottom = 38.0
 theme_override_colors/font_color = Color(1, 0.82, 0.3, 1)
 theme_override_font_sizes/font_size = 20
-horizontal_alignment = 1
 text = "Engranajes: 0 / 0"
+horizontal_alignment = 1
 
-[node name="DefeatFlash" type="ColorRect" parent="HUD"]
+[node name="DefeatFlash" type="ColorRect" parent="HUD" unique_id=1475273213]
 visible = false
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.75, 0.1, 0.12, 0.5)
 mouse_filter = 2
+color = Color(0.75, 0.1, 0.12, 0.5)
 
-[node name="DeathLabel" type="Label" parent="HUD/DefeatFlash"]
+[node name="DeathLabel" type="Label" parent="HUD/DefeatFlash" unique_id=235317594]
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -185,68 +187,68 @@ offset_right = 200.0
 offset_bottom = 28.0
 theme_override_colors/font_color = Color(1, 0.95, 0.95, 1)
 theme_override_font_sizes/font_size = 40
+text = "¡REINICIANDO!"
 horizontal_alignment = 1
 vertical_alignment = 1
-text = "¡REINICIANDO!"
 
-[node name="Player" parent="." instance=ExtResource("1_player")]
+[node name="Player" parent="." unique_id=379135066 instance=ExtResource("1_player")]
 position = Vector2(-1000, 240)
 
-[node name="Box1" parent="." instance=ExtResource("2_box")]
+[node name="Box1" parent="." unique_id=311200247 instance=ExtResource("2_box")]
 position = Vector2(-700, 310)
 
-[node name="Button1" parent="." instance=ExtResource("3_btn")]
+[node name="Button1" parent="." unique_id=446900662 instance=ExtResource("3_btn")]
 position = Vector2(-450, 330)
 target_path = NodePath("../Door1")
 requires_metal_box = true
 
-[node name="Door1" parent="." instance=ExtResource("4_door")]
+[node name="Door1" parent="." unique_id=212891267 instance=ExtResource("4_door")]
 position = Vector2(-370, 280)
 auto_close = false
 
-[node name="Box2" parent="." instance=ExtResource("2_box")]
+[node name="Box2" parent="." unique_id=550058569 instance=ExtResource("2_box")]
 position = Vector2(150, 310)
 
-[node name="Box3" parent="." instance=ExtResource("2_box")]
+[node name="Box3" parent="." unique_id=677699462 instance=ExtResource("2_box")]
 position = Vector2(250, 310)
 
-[node name="Button2a" parent="." instance=ExtResource("3_btn")]
+[node name="Button2a" parent="." unique_id=162320653 instance=ExtResource("3_btn")]
 position = Vector2(50, 330)
 target_path = NodePath("../Door2")
 
-[node name="Button2b" parent="." instance=ExtResource("3_btn")]
+[node name="Button2b" parent="." unique_id=403526333 instance=ExtResource("3_btn")]
 position = Vector2(350, 280)
 target_path = NodePath("../Door2")
 requires_metal_box = true
 
-[node name="Door2" parent="." instance=ExtResource("4_door")]
+[node name="Door2" parent="." unique_id=228571241 instance=ExtResource("4_door")]
 position = Vector2(600, 280)
 auto_close = false
 required_presses = 2
 
-[node name="Enemy" parent="." instance=ExtResource("6_enemy")]
+[node name="Enemy" parent="." unique_id=896291728 instance=ExtResource("6_enemy")]
 position = Vector2(490, 285)
 patrol_distance = 90.0
 
-[node name="Goal" parent="." instance=ExtResource("5_goal")]
+[node name="Goal" parent="." unique_id=88355283 instance=ExtResource("5_goal")]
 position = Vector2(1000, 280)
 
-[node name="Gear1" parent="." instance=ExtResource("8_gear")]
+[node name="Gear1" parent="." unique_id=1205078059 instance=ExtResource("8_gear")]
 position = Vector2(-550, 295)
 
-[node name="Gear2" parent="." instance=ExtResource("8_gear")]
+[node name="Gear2" parent="." unique_id=1333984416 instance=ExtResource("8_gear")]
 position = Vector2(350, 235)
 
-[node name="Gear3" parent="." instance=ExtResource("8_gear")]
+[node name="Gear3" parent="." unique_id=1948743422 instance=ExtResource("8_gear")]
 position = Vector2(690, 300)
 
-[node name="AcidPool" parent="." instance=ExtResource("9_acid")]
+[node name="AcidPool" parent="." unique_id=1352295332 instance=ExtResource("9_acid")]
 position = Vector2(760, 324)
 
-[node name="Laser" parent="." instance=ExtResource("10_laser")]
+[node name="Laser" parent="." unique_id=89010737 instance=ExtResource("10_laser")]
 position = Vector2(880, 250)
 
-[node name="Dust" type="CPUParticles2D" parent="."]
+[node name="Dust" type="CPUParticles2D" parent="." unique_id=464081508]
 position = Vector2(0, -260)
 amount = 50
 lifetime = 8.0
@@ -259,18 +261,26 @@ spread = 18.0
 gravity = Vector2(0, 6)
 initial_velocity_min = 4.0
 initial_velocity_max = 12.0
-scale_amount_min = 1.0
 scale_amount_max = 2.5
 color = Color(0.8, 0.72, 0.55, 0.22)
 
-[node name="SignExit" type="Label" parent="."]
-position = Vector2(945, 190)
+[node name="SignExit" type="Label" parent="." unique_id=1560149754]
+offset_left = 945.0
+offset_top = 190.0
+offset_right = 945.0
+offset_bottom = 190.0
 theme_override_colors/font_color = Color(0.4, 0.95, 0.5, 1)
 theme_override_font_sizes/font_size = 22
 text = "SALIDA >>"
 
-[node name="SignWarn" type="Label" parent="."]
-position = Vector2(430, 195)
+[node name="SignWarn" type="Label" parent="." unique_id=218553775]
+offset_left = 430.0
+offset_top = 195.0
+offset_right = 430.0
+offset_bottom = 195.0
 theme_override_colors/font_color = Color(1, 0.5, 0.4, 1)
 theme_override_font_sizes/font_size = 16
 text = "AVISO: DRON"
+
+[node name="MagneticWall" parent="." unique_id=702983495 instance=ExtResource("12_jxjwb")]
+position = Vector2(950, 180)
