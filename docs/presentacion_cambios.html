@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magnet-o · Presentación de cambios (Rol C — Arte / UI-UX)</title>
+<style>
+  :root{
+    --bg:#0d0e13; --bg2:#14161f; --panel:#171a24; --line:#2a2d3a;
+    --metal:#7c8492; --metal-l:#aab2be;
+    --amber:#ffb440; --amber-d:#8a6320;
+    --cyan:#5fdeff; --blue:#3aa0ff; --red:#ff4658; --green:#3ce678;
+    --ink:#e6e8ef; --ink-dim:#9aa0b0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+    background:var(--bg); color:var(--ink); overflow:hidden;
+  }
+  /* Fondo animado tipo campo magnético */
+  .field{position:fixed;inset:0;z-index:0;overflow:hidden;background:
+     radial-gradient(1200px 700px at 80% 10%, rgba(60,230,120,.06), transparent 60%),
+     radial-gradient(900px 600px at 10% 90%, rgba(58,160,255,.07), transparent 60%),
+     linear-gradient(160deg,#0b0c11,#14161f 60%,#1a1410);}
+  .field::before,.field::after{
+    content:"";position:absolute;inset:-40%;
+    background-image:repeating-linear-gradient(115deg, rgba(255,180,64,.045) 0 2px, transparent 2px 46px);
+    animation:drift 24s linear infinite;
+  }
+  .field::after{background-image:repeating-linear-gradient(65deg, rgba(95,222,255,.04) 0 2px, transparent 2px 60px);animation-duration:34s;animation-direction:reverse}
+  @keyframes drift{to{transform:translateX(46px)}}
+
+  /* Deck */
+  .deck{position:relative;z-index:1;height:100vh;display:flex;align-items:center;justify-content:center;padding:5vh 6vw}
+  .slide{position:absolute;width:min(1080px,88vw);max-height:86vh;overflow:auto;
+    background:linear-gradient(180deg,rgba(23,26,36,.92),rgba(15,17,23,.94));
+    border:1px solid var(--line);border-radius:14px;padding:40px 48px;
+    box-shadow:0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.03);
+    opacity:0;transform:translateY(24px) scale(.98);pointer-events:none;
+    transition:opacity .5s ease, transform .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto}
+  .slide.left{transform:translateY(-18px) scale(.98)}
+
+  .tag{display:inline-block;font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:#0d0e13;background:linear-gradient(90deg,var(--amber),#ffd27a);
+    padding:4px 12px;border-radius:20px;font-weight:700;margin-bottom:18px}
+  h1{font-size:clamp(34px,5vw,64px);line-height:1.02;letter-spacing:-.02em;
+    background:linear-gradient(180deg,#dfe7ff,#8ea0c8);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h2{font-size:clamp(24px,3.2vw,38px);margin-bottom:6px;color:#eaf0ff}
+  .sub{color:var(--ink-dim);font-size:clamp(15px,1.6vw,19px);margin-top:10px}
+  p{color:var(--ink);line-height:1.6;font-size:16px}
+  ul{list-style:none;margin-top:16px;display:grid;gap:12px}
+  li{position:relative;padding-left:26px;line-height:1.55;color:#d7dbe6}
+  li::before{content:"";position:absolute;left:2px;top:8px;width:9px;height:9px;border-radius:2px;
+    background:var(--amber);box-shadow:0 0 10px rgba(255,180,64,.6);transform:rotate(45deg)}
+  li.c::before{background:var(--cyan);box-shadow:0 0 10px rgba(95,222,255,.6)}
+  li.g::before{background:var(--green);box-shadow:0 0 10px rgba(60,230,120,.6)}
+  code{font-family:"Cascadia Code",Consolas,monospace;font-size:.9em;background:#0c0d12;
+    border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--cyan)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:22px}
+  .card{background:rgba(12,13,18,.6);border:1px solid var(--line);border-radius:11px;padding:18px 20px;transition:.3s}
+  .card:hover{border-color:var(--amber-d);transform:translateY(-3px)}
+  .card h3{font-size:17px;margin-bottom:8px;color:#fff;display:flex;align-items:center;gap:8px}
+  .card p{font-size:14px;color:var(--ink-dim)}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .files{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:Consolas,monospace;font-size:12.5px;color:#cbd2e0;background:#0c0d12;
+    border:1px solid var(--line);border-radius:6px;padding:5px 10px}
+  .chip.new{border-color:#2f5d38;color:#a9f0c1}
+  .chip.mod{border-color:#5d4a20;color:#f2d69a}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+  .box{background:rgba(12,13,18,.6);border:1px solid var(--line);border-radius:11px;padding:16px 18px}
+  .box.before{border-left:3px solid var(--red)}
+  .box.after{border-left:3px solid var(--green)}
+  .box h4{font-size:13px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;color:var(--ink-dim)}
+  .box.before h4{color:#ff8a94}.box.after h4{color:#7ef0a6}
+  .box ul{gap:8px}.box li{font-size:14.5px}
+
+  /* Mag-Boy animado desde el spritesheet real */
+  .stage{margin-top:22px;display:flex;align-items:flex-end;gap:26px;flex-wrap:wrap}
+  .magboy{width:96px;height:144px;image-rendering:pixelated;
+    background-image:url("../assets/sprites/player_sheet.png");
+    background-size:960px 144px; /* 320x48 -> x3 */
+    background-repeat:no-repeat;
+    animation:walk .6s steps(6) infinite;
+    filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))}
+  /* walk = frames 2..7 -> de x=-192px a -672px (paso 96px, 6 frames) */
+  @keyframes walk{from{background-position:-192px 0}to{background-position:-768px 0}}
+  .idle{animation:idle 1.4s steps(2) infinite}
+  @keyframes idle{from{background-position:0 0}to{background-position:-192px 0}}
+  .floor{flex:1;min-width:180px;height:8px;border-radius:4px;
+    background:linear-gradient(90deg,var(--amber-d),transparent);align-self:center;margin-bottom:10px}
+  .cap{font-size:13px;color:var(--ink-dim);margin-top:6px}
+
+  .parallax-demo{margin-top:20px;height:150px;border-radius:11px;overflow:hidden;border:1px solid var(--line);position:relative}
+  .pl{position:absolute;inset:0;background-repeat:repeat-x;image-rendering:pixelated;background-size:auto 150px}
+  .pl.far{background-image:url("../assets/sprites/parallax/far.png");animation:sc 40s linear infinite}
+  .pl.mid{background-image:url("../assets/sprites/parallax/mid.png");animation:sc 22s linear infinite}
+  .pl.near{background-image:url("../assets/sprites/parallax/near.png");animation:sc 12s linear infinite}
+  @keyframes sc{to{background-position:-1280px 0}}
+
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin-top:24px}
+  .metric{background:rgba(12,13,18,.6);border:1px solid var(--line);border-radius:11px;padding:16px;text-align:center}
+  .metric .n{font-size:34px;font-weight:800;color:var(--amber)}
+  .metric .l{font-size:12.5px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+
+  /* HUD navegación */
+  .hud{position:fixed;z-index:5;bottom:22px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:18px}
+  .dots{display:flex;gap:9px}
+  .nav-dot{width:9px;height:9px;border-radius:50%;background:#39404f;border:none;cursor:pointer;transition:.25s;padding:0}
+  .nav-dot.on{background:var(--amber);box-shadow:0 0 10px rgba(255,180,64,.7);transform:scale(1.25)}
+  .btn{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:8px;
+    width:40px;height:40px;font-size:18px;cursor:pointer;transition:.2s}
+  .btn:hover{border-color:var(--amber);color:var(--amber)}
+  .progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--amber),var(--cyan));z-index:6;transition:width .5s ease}
+  .counter{position:fixed;top:16px;right:22px;z-index:5;font-size:13px;color:var(--ink-dim);font-family:Consolas,monospace}
+  .hint{position:fixed;top:16px;left:22px;z-index:5;font-size:12px;color:var(--ink-dim)}
+  .kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 6px;font-family:Consolas,monospace;color:#cbd2e0}
+  a{color:var(--cyan)}
+  .footer-note{margin-top:22px;font-size:13px;color:var(--ink-dim);border-top:1px dashed var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="field"></div>
+<div class="progress" id="progress"></div>
+<div class="hint"><span class="kbd">←</span> <span class="kbd">→</span> para navegar · <span class="kbd">F</span> pantalla completa</div>
+<div class="counter" id="counter">01 / 10</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 -->
+  <section class="slide active">
+    <span class="tag">Proyecto de Videojuegos 2026</span>
+    <h1>MAGNET-O<br>Cambios del Rol&nbsp;C</h1>
+    <p class="sub">Arte · UI/UX · Backgrounds — de la versión base a la entrega pulida.<br>
+    Todo el trabajo fue <b>aditivo y no destructivo</b>: archivos nuevos y enganches por señales, sin romper el gameplay existente.</p>
+    <div class="stage">
+      <div class="magboy" title="Mag-Boy caminando (spritesheet real)"></div>
+      <div class="floor"></div>
+      <div class="magboy idle" title="Mag-Boy en reposo"></div>
+    </div>
+    <p class="cap">↑ Mag-Boy animado con el <code>player_sheet.png</code> generado en esta sesión (CSS <code>steps()</code>).</p>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <span class="tag">Punto de partida</span>
+    <h2>La versión inicial que encontré</h2>
+    <p class="sub">Un plataformero 2D funcional en Godot (≈ v0.2.2) con lo esencial ya montado:</p>
+    <div class="grid">
+      <div class="card"><h3><span class="dot" style="background:var(--blue)"></span>Mecánica</h3><p>Magnetismo dual (atraer/repeler), cajas metálicas, botones y puertas con lógica AND.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--red)"></span>Contenido</h3><p>Niveles 1–3, dron volador, peligros (láser/ácido), engranajes coleccionables.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--green)"></span>Sistemas</h3><p>Autoloads <code>Game</code>/<code>Audio</code>/<code>PerfOverlay</code>, guardado, victoria/derrota.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--metal)"></span>Presentación</h3><p>Menú plano, HUD de texto, sprites <b>estáticos</b>, fondo único, sin transiciones ni juice.</p></div>
+    </div>
+    <p class="footer-note">Diagnóstico Rol C: faltaba <b>identidad visual</b>, <b>feedback</b> (juice), <b>pausa</b>, <b>profundidad</b> (parallax), <b>créditos</b> y <b>animación</b> del personaje.</p>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <span class="tag">Visión general</span>
+    <h2>Lo que se añadió</h2>
+    <div class="grid">
+      <div class="card"><h3>🎨 Theme + Pausa</h3><p>Identidad visual industrial reutilizable y menú de pausa con Esc.</p></div>
+      <div class="card"><h3>✨ Juice / VFX</h3><p>Screen shake, hit-stop, fundidos de escena y destellos.</p></div>
+      <div class="card"><h3>🏭 Parallax</h3><p>Fondo con 3 capas de profundidad, auto-animado en menú.</p></div>
+      <div class="card"><h3>🎬 Créditos</h3><p>Rollo final enlazado al completar el juego.</p></div>
+      <div class="card"><h3>🤖 Sprites animados</h3><p>Mag-Boy con idle / caminar / salto (AnimatedSprite2D).</p></div>
+      <div class="card"><h3>🐍 Pipeline</h3><p>Python + generación de arte por código (sprites y parallax).</p></div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="n">14</div><div class="l">Archivos nuevos</div></div>
+      <div class="metric"><div class="n">5</div><div class="l">Archivos ajustados</div></div>
+      <div class="metric"><div class="n">3</div><div class="l">Autoloads nuevos</div></div>
+      <div class="metric"><div class="n">0</div><div class="l">Errores en consola</div></div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <span class="tag">Paquete 1</span>
+    <h2>Theme compartido + Menú de pausa</h2>
+    <ul>
+      <li><b>Theme industrial</b> (<code>assets/ui/theme.tres</code>): botones metal con borde ámbar, hover cian, foco visible. Da coherencia a menús y HUD.</li>
+      <li class="c"><b>Menú de pausa</b> (<code>PauseMenu.tscn</code> + <code>PauseManager.gd</code>): <b>Esc</b> pausa/reanuda con <code>get_tree().paused</code>; Reanudar / Reiniciar / Menú.</li>
+      <li class="g"><b>No destructivo</b>: intercepta Esc en <code>_input</code> y lo consume, salvo en la pantalla de victoria (deja pasar Esc→menú). No hubo que tocar la lógica de cada nivel.</li>
+    </ul>
+    <div class="files">
+      <span class="chip new">+ assets/ui/theme.tres</span>
+      <span class="chip new">+ scenes/ui/PauseMenu.tscn</span>
+      <span class="chip new">+ scripts/ui/PauseMenu.gd</span>
+      <span class="chip new">+ scripts/ui/PauseManager.gd</span>
+      <span class="chip mod">~ project.godot (autoload Pause)</span>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <span class="tag">Paquete 2</span>
+    <h2>Juice / VFX — sensación de impacto</h2>
+    <p class="sub">Un autoload <code>Fx</code> global que añade "jugosidad" enganchándose a las señales de <code>Game</code>, sin modificar niveles ni <code>Player.gd</code>.</p>
+    <ul>
+      <li><b>Screen shake</b> sobre el <code>offset</code> de la cámara activa (la del jugador no lo usaba → seguro).</li>
+      <li class="c"><b>Hit-stop</b> con <code>Engine.time_scale</code> y timer que ignora la escala de tiempo.</li>
+      <li class="g"><b>Fundidos</b>: fade-in automático al entrar a cada escena + <code>to_scene()</code> para fundir a negro.</li>
+      <li><b>Enganches</b>: al morir → shake + hit-stop; al ganar → hit-stop + destello dorado.</li>
+    </ul>
+    <div class="files">
+      <span class="chip new">+ scripts/ui/Fx.gd</span>
+      <span class="chip mod">~ project.godot (autoload Fx)</span>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <span class="tag">Paquete 3</span>
+    <h2>Parallax — profundidad de fábrica</h2>
+    <div class="parallax-demo">
+      <div class="pl far"></div><div class="pl mid"></div><div class="pl near"></div>
+    </div>
+    <p class="cap">↑ Las 3 capas reales (<code>far</code> / <code>mid</code> / <code>near</code>) moviéndose a distinta velocidad.</p>
+    <ul>
+      <li><b>Texturas horneadas con el propio Godot</b> (headless) vía <code>tools/bake_parallax.gd</code> — sin depender de arte externo.</li>
+      <li class="c"><b>Escena reutilizable</b> <code>ParallaxBg.tscn</code>: si hay <code>Camera2D</code> sigue el scroll; si no (menú), se desplaza sola.</li>
+      <li class="g">Integrada en el <b>Menú Principal</b>, que pasó de un fondo plano a uno con movimiento.</li>
+    </ul>
+    <div class="files">
+      <span class="chip new">+ tools/bake_parallax.gd</span>
+      <span class="chip new">+ assets/sprites/parallax/{far,mid,near}.png</span>
+      <span class="chip new">+ scenes/ui/ParallaxBg.tscn</span>
+      <span class="chip new">+ scripts/ui/ParallaxBg.gd</span>
+      <span class="chip mod">~ scenes/MainMenu.tscn</span>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <span class="tag">Paquete 4</span>
+    <h2>Pantalla de créditos</h2>
+    <ul>
+      <li><b>Rollo de créditos</b> (<code>Credits.tscn</code> + <code>Credits.gd</code>) que sube en pantalla, con los 3 roles del equipo, el parallax detrás y el theme aplicado.</li>
+      <li class="c">Botón <b>Volver</b> al terminar y <b>Esc</b> para salir en cualquier momento.</li>
+      <li class="g"><b>Enlazado al final del juego</b>: al superar el último nivel, <span class="kbd">Espacio</span> lleva a los créditos (cambio mínimo en <code>Level.gd</code>).</li>
+    </ul>
+    <div class="files">
+      <span class="chip new">+ scenes/ui/Credits.tscn</span>
+      <span class="chip new">+ scripts/ui/Credits.gd</span>
+      <span class="chip mod">~ scripts/Level.gd</span>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <span class="tag">Paquete 5</span>
+    <h2>Sprites animados de Mag-Boy</h2>
+    <div class="split">
+      <div class="box before"><h4>Antes</h4><ul>
+        <li>Un <code>Sprite2D</code> con un PNG fijo.</li>
+        <li>Animación "procedural" (vaivén y squash por código).</li>
+        <li>Sin frames reales de caminar o saltar.</li>
+      </ul></div>
+      <div class="box after"><h4>Ahora</h4><ul>
+        <li><code>AnimatedSprite2D</code> + <code>SpriteFrames</code>.</li>
+        <li>Animaciones <b>idle · walk · jump · fall</b>.</li>
+        <li>Se eligen por estado (suelo/aire/velocidad) + flip por dirección.</li>
+      </ul></div>
+    </div>
+    <div class="stage">
+      <div class="magboy"></div><div class="floor"></div>
+    </div>
+    <div class="files">
+      <span class="chip mod">~ tools/gen_assets.py (spritesheet)</span>
+      <span class="chip new">+ assets/sprites/player_sheet.png</span>
+      <span class="chip new">+ assets/sprites/player_frames.tres</span>
+      <span class="chip mod">~ scenes/Player.tscn</span>
+      <span class="chip mod">~ scripts/Player.gd</span>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <span class="tag">Herramientas</span>
+    <h2>Pipeline de arte por código</h2>
+    <ul>
+      <li><b>Python 3.12</b> instalado (con <code>pillow</code> y <code>numpy</code>): <code>gen_assets.py</code> regenera sprites y audio de forma reproducible.</li>
+      <li class="c"><b>Godot headless</b> como generador de imágenes: <code>bake_parallax.gd</code> hornea las capas del fondo sin salir del motor.</li>
+      <li class="g"><b>Validación continua</b>: cada cambio se probó importando y ejecutando el proyecto en headless — <b>sin errores de script</b>.</li>
+    </ul>
+    <div class="metrics">
+      <div class="metric"><div class="n">10</div><div class="l">Frames de Mag-Boy</div></div>
+      <div class="metric"><div class="n">3</div><div class="l">Capas parallax</div></div>
+      <div class="metric"><div class="n">4</div><div class="l">Efectos de juice</div></div>
+      <div class="metric"><div class="n">100%</div><div class="l">Escenas cargan OK</div></div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide">
+    <span class="tag">Cierre</span>
+    <h2>Estado y siguientes pasos</h2>
+    <div class="split">
+      <div class="box after"><h4>Entregado (Rol C)</h4><ul>
+        <li>Identidad visual (theme) + menú de pausa</li>
+        <li>Juice: shake, hit-stop, fundidos, destellos</li>
+        <li>Parallax reutilizable + menú vivo</li>
+        <li>Pantalla de créditos final</li>
+        <li>Mag-Boy animado (idle/walk/jump)</li>
+      </ul></div>
+      <div class="box before"><h4>Pendiente / a coordinar</h4><ul>
+        <li>Integrar el parallax dentro de los niveles (fondo del Rol B)</li>
+        <li>Pixel-art definitivo (hoy arte generado por código)</li>
+        <li>Export final Web: requiere Godot <b>Standard</b> (la edición mono no trae plantilla Web)</li>
+      </ul></div>
+    </div>
+    <p class="footer-note">Godot 4.7 · GDScript · Todo verificado en headless. <br>Presentación autocontenida — se abre con doble clic en cualquier navegador.</p>
+  </section>
+
+</div>
+
+<div class="hud">
+  <button class="btn" id="prev">‹</button>
+  <div class="dots" id="dots"></div>
+  <button class="btn" id="next">›</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const dotsWrap = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  let i = 0;
+
+  slides.forEach((_, idx) => {
+    const d = document.createElement('button');
+    d.className = 'nav-dot' + (idx === 0 ? ' on' : '');
+    d.addEventListener('click', () => go(idx));
+    dotsWrap.appendChild(d);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function go(n){
+    if(n < 0 || n >= slides.length) return;
+    slides[i].classList.remove('active');
+    slides[i].classList.add('left');
+    dots[i].classList.remove('on');
+    i = n;
+    slides[i].classList.remove('left');
+    slides[i].classList.add('active');
+    dots[i].classList.add('on');
+    counter.textContent = String(i+1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
+    progress.style.width = ((i+1)/slides.length*100) + '%';
+  }
+  function nextS(){ go(Math.min(i+1, slides.length-1)); }
+  function prevS(){ go(Math.max(i-1, 0)); }
+
+  document.getElementById('next').addEventListener('click', nextS);
+  document.getElementById('prev').addEventListener('click', prevS);
+  document.addEventListener('keydown', e => {
+    if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); nextS(); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); prevS(); }
+    else if(e.key === 'Home'){ go(0); }
+    else if(e.key === 'End'){ go(slides.length-1); }
+    else if(e.key.toLowerCase() === 'f'){
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+  // Deslizar en táctil
+  let tx=0;
+  document.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+  document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx; if(dx<-50)nextS(); else if(dx>50)prevS();},{passive:true});
+
+  progress.style.width = (1/slides.length*100) + '%';
+</script>
+</body>
+</html>

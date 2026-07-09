@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bwcnaqdf0jv41"]
 
 [ext_resource type="Script" uid="uid://baf1vh5u7gls7" path="res://scripts/Player.gd" id="1_player"]
-[ext_resource type="Texture2D" uid="uid://bmwf7lqhy4a34" path="res://assets/sprites/player.png" id="2_tex"]
+[ext_resource type="SpriteFrames" uid="uid://magnetoplayerframes" path="res://assets/sprites/player_frames.tres" id="2_frames"]
 [ext_resource type="Texture2D" uid="uid://cew5j7dtyrntv" path="res://assets/sprites/core.png" id="3_core"]
 
 [sub_resource type="RectangleShape2D" id="PlayerBodyShape"]
@@ -19,9 +19,11 @@ debug_magnetism = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1457624391]
 shape = SubResource("PlayerBodyShape")
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=1960109778]
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=1960109778]
 texture_filter = 1
-texture = ExtResource("2_tex")
+sprite_frames = ExtResource("2_frames")
+animation = &"idle"
+autoplay = "idle"
 
 [node name="Core" type="Sprite2D" parent="." unique_id=1964363136]
 modulate = Color(0.9, 0.9, 0.4, 1)
