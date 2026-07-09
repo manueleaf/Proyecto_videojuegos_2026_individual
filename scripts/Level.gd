@@ -5,6 +5,7 @@ extends Node2D
 ## Espacio: siguiente nivel · R: reiniciar · Esc: menú.
 
 const MENU_PATH := "res://scenes/MainMenu.tscn"
+const CREDITS_PATH := "res://scenes/ui/Credits.tscn"
 
 @export var level_index: int = 0
 
@@ -52,15 +53,18 @@ func _on_level_won() -> void:
 	_victory_sub.visible = true
 	if Game.is_last_level():
 		_victory.text = "¡JUEGO COMPLETADO!"
-		_victory_sub.text = "Engranajes: %d / %d        Esc: menu" % [Game.gears_collected, Game.gears_total]
+		_victory_sub.text = "Engranajes: %d / %d        Espacio: creditos        Esc: menu" % [Game.gears_collected, Game.gears_total]
 	else:
 		_victory_sub.text = "Engranajes: %d / %d        Espacio: siguiente        R: reiniciar" % [Game.gears_collected, Game.gears_total]
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
-		if _won and not Game.is_last_level() and (event.keycode == KEY_SPACE or event.keycode == KEY_ENTER):
-			Game.advance_level()
+		if _won and (event.keycode == KEY_SPACE or event.keycode == KEY_ENTER):
+			if Game.is_last_level():
+				get_tree().change_scene_to_file(CREDITS_PATH)
+			else:
+				Game.advance_level()
 		elif event.keycode == KEY_R:
 			get_tree().reload_current_scene()
 		elif event.keycode == KEY_ESCAPE:

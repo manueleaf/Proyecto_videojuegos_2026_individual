@@ -4,3 +4,8 @@
 
 # Builds exportados (no versionar binarios pesados)
 /build/
+/Magnet-o.app/
+/Magnet-o.command
+
+# Basura de macOS
+.DS_Store

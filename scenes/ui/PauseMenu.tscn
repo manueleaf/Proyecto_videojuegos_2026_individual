@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3 uid="uid://magnetoui0pause"]
+
+[ext_resource type="Script" path="res://scripts/ui/PauseMenu.gd" id="1_pause"]
+[ext_resource type="Theme" uid="uid://magnetoui0theme" path="res://assets/ui/theme.tres" id="2_theme"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 100
+script = ExtResource("1_pause")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.03, 0.04, 0.06, 0.62)
+
+[node name="Center" type="CenterContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Menu" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme = ExtResource("2_theme")
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Title" type="Label" parent="Center/Menu"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 52
+horizontal_alignment = 1
+text = "PAUSA"
+
+[node name="Spacer" type="Control" parent="Center/Menu"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Resume" type="Button" parent="Center/Menu"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+text = "Reanudar"
+
+[node name="Restart" type="Button" parent="Center/Menu"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+text = "Reiniciar nivel"
+
+[node name="ToMenu" type="Button" parent="Center/Menu"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+text = "Menu principal"
+
+[node name="Hint" type="Label" parent="Center/Menu"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.62, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+text = "Esc: reanudar"

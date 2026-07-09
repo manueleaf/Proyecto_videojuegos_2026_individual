@@ -26,5 +26,8 @@ func _on_debug() -> void:
 	# lo crean Integrante 1 e Integrante 3 en DebugMenu.tscn.
 	if ResourceLoader.exists(DEBUG_MENU_PATH):
 		get_tree().change_scene_to_file(DEBUG_MENU_PATH)
+	elif ResourceLoader.exists("res://scenes/TestLevel_MagneticWalls.tscn"):
+		# Aún no hay DebugMenu; abrimos directo la prueba de paredes magnéticas.
+		get_tree().change_scene_to_file("res://scenes/TestLevel_MagneticWalls.tscn")
 	else:
 		push_warning("DebugMenu.tscn aún no existe (lo crean Integrante 1 / 3).")

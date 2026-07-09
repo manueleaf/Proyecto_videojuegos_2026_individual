@@ -81,6 +81,80 @@ def gen_player():
     save_sprite(img, "player.png")
 
 
+# ------------------------------------------------ Mag-Boy animado (spritesheet)
+def _mb_torso_head(d, dy, arm_dy):
+    """Dibuja torso + cabeza + brazos de Mag-Boy desplazados verticalmente `dy`."""
+    # Torso
+    d.rectangle([6, 21 + dy, 25, 40 + dy], fill=METAL, outline=OUT)
+    d.rectangle([8, 23 + dy, 12, 38 + dy], fill=METAL_L)          # luz lateral izq
+    d.rectangle([20, 30 + dy, 24, 39 + dy], fill=METAL_D)         # sombra
+    d.line([7, 35 + dy, 24, 35 + dy], fill=RUST_D)                # juntura
+    d.rectangle([21, 24 + dy, 22, 25 + dy], fill=RUST)            # óxido
+    # Brazos (pueden subir/bajar con arm_dy)
+    d.rectangle([3, 23 + dy + arm_dy, 5, 36 + dy + arm_dy], fill=METAL_D, outline=OUT)
+    d.rectangle([26, 23 + dy + arm_dy, 28, 36 + dy + arm_dy], fill=METAL_D, outline=OUT)
+    # Socket del núcleo (lo cubre el Core sprite)
+    d.ellipse([12, 26 + dy, 19, 33 + dy], fill=DARK, outline=OUT)
+    # Casco
+    d.rounded_rectangle([8, 5 + dy, 23, 20 + dy], radius=4, fill=METAL, outline=OUT)
+    d.rectangle([9, 6 + dy, 22, 8 + dy], fill=METAL_L)            # brillo superior
+    # Visor
+    d.rectangle([10, 11 + dy, 21, 16 + dy], fill=VISOR, outline=OUT)
+    d.rectangle([11, 11 + dy, 16, 12 + dy], fill=VISOR_HI)        # reflejo
+    # Antena
+    d.line([16, 5 + dy, 16, 1 + dy], fill=METAL_L)
+    d.ellipse([15, 0 + dy, 17, 2 + dy], fill=RED)
+
+
+def _mb_leg(d, x, top, bottom):
+    d.rectangle([x, top, x + 4, bottom], fill=METAL_D, outline=OUT)
+    d.rectangle([x - 1, bottom - 1, x + 5, bottom + 1], fill=DARK)  # pie
+
+
+def _mb_frame(p, mode):
+    """Un frame de 32x48 de Mag-Boy. `p` en [0,1) para ciclos; `mode` define la pose."""
+    W, H = 32, 48
+    img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    s = math.sin(2 * math.pi * p)
+    c = math.cos(2 * math.pi * p)
+
+    if mode == "idle":
+        dy = -1 if s > 0.5 else 0                 # respiración sutil
+        ll_dx = rl_dx = 0
+        ll_lift = rl_lift = 0
+        arm_dy = -1 if s > 0.5 else 0
+    elif mode == "walk":
+        dy = -1 if abs(s) > 0.7 else 0            # rebote al pisar
+        ll_dx = int(round(c * 2)); rl_dx = -int(round(c * 2))
+        ll_lift = max(0, int(round(s * 3))); rl_lift = max(0, int(round(-s * 3)))
+        arm_dy = 0
+    elif mode == "jump_up":
+        dy = -1; ll_dx = 1; rl_dx = -1; ll_lift = 3; rl_lift = 2; arm_dy = -2
+    else:  # fall
+        dy = 0; ll_dx = -2; rl_dx = 2; ll_lift = 0; rl_lift = 0; arm_dy = 1
+
+    # Piernas primero (quedan detrás del torso)
+    _mb_leg(d, 9 + ll_dx, 39 + dy, 46 + dy - ll_lift)
+    _mb_leg(d, 18 + rl_dx, 39 + dy, 46 + dy - rl_lift)
+    _mb_torso_head(d, dy, arm_dy)
+    return img
+
+
+def gen_player_sheet():
+    """Spritesheet 1 fila: idle(2) + walk(6) + jump_up(1) + fall(1) = 10 frames de 32x48."""
+    W, H = 32, 48
+    frames = [_mb_frame(0.0, "idle"), _mb_frame(0.5, "idle")]
+    for k in range(6):
+        frames.append(_mb_frame(k / 6.0, "walk"))
+    frames.append(_mb_frame(0.0, "jump_up"))
+    frames.append(_mb_frame(0.0, "fall"))
+    sheet = Image.new("RGBA", (W * len(frames), H), (0, 0, 0, 0))
+    for i, f in enumerate(frames):
+        sheet.paste(f, (i * W, 0))
+    save_sprite(sheet, "player_sheet.png")
+
+
 # ------------------------------------------------------------ caja metálica --
 def gen_box():
     W = H = 40
@@ -336,6 +410,7 @@ def gen_hurt_wav():
 
 if __name__ == "__main__":
     gen_player()
+    gen_player_sheet()
     gen_box()
     gen_drone()
     gen_core()
