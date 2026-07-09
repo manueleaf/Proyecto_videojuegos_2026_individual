@@ -9,10 +9,26 @@ extends CharacterBody2D
 @export var friction: float = 1800.0
 @export var air_control: float = 0.6
 
+# Game feel: coyote time + jump buffer
+@export var coyote_time: float = 0.12
+@export var jump_buffer_time: float = 0.12
+
+var _coyote_timer: float = 0.0
+var _jump_buffer_timer: float = 0.0
+
 # Magnetismo
 @export var magnet_force: float = 1800.0
 @export var magnet_falloff: float = 0.35  # 0 = fuerza constante, 1 = decae linealmente con distancia
 @export var debug_magnetism: bool = false
+
+# Paredes magneticas
+@export var wall_dash_impulse: float = 650.0
+@export var wall_repel_impulse: float = 700.0
+@export var wall_repel_boost_y: float = -320.0
+@export var wall_cling_pull: float = 260.0
+@export var wall_action_cooldown: float = 0.35
+
+var _wall_cooldown_timer: float = 0.0
 
 enum Polarity { NONE, ATTRACT, REPEL }
 var current_polarity: int = Polarity.NONE
@@ -40,6 +56,8 @@ func respawn() -> void:
 	global_position = _spawn_position
 	velocity = Vector2.ZERO
 	current_polarity = Polarity.NONE
+	_coyote_timer = 0.0
+	_jump_buffer_timer = 0.0
 	_set_selected_box(null)
 	Audio.set_magnet_active(false)
 	Audio.play_sfx("hurt")
@@ -48,11 +66,12 @@ func respawn() -> void:
 
 func _physics_process(delta: float) -> void:
 	_handle_gravity(delta)
-	_handle_jump()
+	_handle_jump(delta)
 	_handle_horizontal_movement(delta)
 	_handle_polarity_input()
 	_update_target_selection()
 	_apply_magnetism()
+	_process_wall_magnetism(delta)
 	_update_visual_feedback()
 	move_and_slide()
 	_update_sprite_anim(delta)
@@ -64,10 +83,29 @@ func _handle_gravity(delta: float) -> void:
 		velocity.y += gravity * delta
 
 
-func _handle_jump() -> void:
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+func _handle_jump(delta: float) -> void:
+	# Jump buffer: si se presiono saltar, guardamos el "recuerdo" por un rato,
+	# aunque todavia no estemos en el suelo (ej. justo antes de aterrizar).
+	if Input.is_action_just_pressed("jump"):
+		_jump_buffer_timer = jump_buffer_time
+	else:
+		_jump_buffer_timer -= delta
+
+	# Coyote time: mientras estamos en el suelo se resetea al maximo; en el
+	# aire va bajando, permitiendo saltar un poco despues de salir de una
+	# plataforma (perdona el timing de caer sin haber saltado a tiempo).
+	if is_on_floor():
+		_coyote_timer = coyote_time
+	else:
+		_coyote_timer -= delta
+
+	# Si hay un salto "recordado" Y seguimos dentro del margen de coyote
+	# time, ejecutamos el salto.
+	if _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
 		velocity.y = jump_velocity
 		Audio.play_sfx("jump")
+		_jump_buffer_timer = 0.0
+		_coyote_timer = 0.0
 
 
 func _handle_horizontal_movement(delta: float) -> void:
@@ -153,6 +191,58 @@ func _get_metal_bodies_in_range() -> Array:
 		if body is RigidBody2D:
 			result.append(body)
 	return result
+
+
+func _get_walls_in_range() -> Array:
+	var result: Array = []
+	for body in magnet_area.get_overlapping_bodies():
+		if body is StaticBody2D and body.is_in_group("magnetic_wall_root"):
+			result.append(body)
+	return result
+
+
+func _closest_wall(walls: Array) -> StaticBody2D:
+	var closest: StaticBody2D = null
+	var closest_dist_sq: float = INF
+	for w in walls:
+		var d_sq: float = (w.global_position - global_position).length_squared()
+		if d_sq < closest_dist_sq:
+			closest = w
+			closest_dist_sq = d_sq
+	return closest
+
+
+func _process_wall_magnetism(delta: float) -> void:
+	if _wall_cooldown_timer > 0.0:
+		_wall_cooldown_timer -= delta
+
+	var walls: Array = _get_walls_in_range()
+	if walls.is_empty():
+		return
+
+	var wall: StaticBody2D = _closest_wall(walls)
+	var dir: Vector2 = (wall.global_position - global_position).normalized()
+
+	# ATRAER
+	if Input.is_action_just_pressed("attract") and _wall_cooldown_timer <= 0.0:
+		if not is_on_floor():
+			velocity = dir * wall_dash_impulse
+			_wall_cooldown_timer = wall_action_cooldown
+	elif Input.is_action_pressed("attract") and is_on_floor():
+		velocity.x = move_toward(velocity.x, dir.x * wall_cling_pull, wall_cling_pull * delta * 4.0)
+
+	# REPELER
+	if Input.is_action_just_pressed("repel") and _wall_cooldown_timer <= 0.0:
+		var away: Vector2 = -dir
+		if not is_on_floor():
+			velocity = away * wall_repel_impulse
+			velocity.y += wall_repel_boost_y
+		else:
+			velocity.x = away.x * (wall_repel_impulse * 0.4)
+		_wall_cooldown_timer = wall_action_cooldown
+
+	if debug_magnetism:
+		print("[WALL] %s dir=%s cooldown=%.2f" % [wall.name, dir, _wall_cooldown_timer])
 
 
 func _closest_body(bodies: Array) -> RigidBody2D:

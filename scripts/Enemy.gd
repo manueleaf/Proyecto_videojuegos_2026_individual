@@ -1,14 +1,17 @@
 extends CharacterBody2D
 class_name SentinelDrone
-
 ## Dron Centinela: robot volador que patrulla horizontalmente desde su punto
 ## de aparición (`patrol_distance`) y flota con un leve vaivén. No dispara,
-## pero daña al jugador al contacto (lo respawnea). Muere si lo golpea una caja
-## metálica con suficiente velocidad (puzzle: repeler la caja con el imán).
+## pero daña al jugador al contacto (lo respawnea) — salvo que el jugador
+## venga con velocidad alta (dash/repel-boost de una pared magnética), en
+## cuyo caso actua como proyectil y destruye al dron. También muere si lo
+## golpea una caja metálica con suficiente velocidad (puzzle: repeler la
+## caja con el imán).
 
 @export var speed: float = 90.0
 @export var patrol_distance: float = 220.0  # Distancia desde el spawn a cada lado
 @export var box_kill_speed: float = 250.0   # Velocidad mínima de caja para destruirlo
+@export var player_kill_speed: float = 600.0  # Velocidad mínima del jugador (dash magnético) para destruirlo
 @export var debug_enemy: bool = false
 
 const BOB_FREQ: float = 3.0   # Velocidad del vaivén vertical
@@ -40,6 +43,7 @@ func _physics_process(delta: float) -> void:
 		_direction = -1
 	if is_on_wall():
 		_direction *= -1
+
 	velocity.x = _direction * speed
 
 	# Vuelo: flota alrededor de su altura de aparición con un leve vaivén.
@@ -55,9 +59,20 @@ func _physics_process(delta: float) -> void:
 
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player"):
+		var player_speed: float = 0.0
+		if body is CharacterBody2D:
+			player_speed = (body as CharacterBody2D).velocity.length()
+
 		if debug_enemy:
-			print("[DRON] Jugador tocado -> respawn")
-		if body.has_method("respawn"):
+			print("[DRON] Jugador tocado, velocidad=%.1f" % player_speed)
+
+		if player_speed >= player_kill_speed:
+			# El jugador venia con un dash/repel-boost de pared magnetica:
+			# actua como proyectil y destruye al dron sin danarse.
+			if debug_enemy:
+				print("[DRON] Destruido por impacto del jugador")
+			_die()
+		elif body.has_method("respawn"):
 			body.respawn()
 		return
 
@@ -79,4 +94,4 @@ func _die() -> void:
 	tw.tween_property(sprite, "scale", Vector2(1.7, 1.7), 0.2)
 	tw.tween_property(sprite, "modulate:a", 0.0, 0.2)
 	tw.set_parallel(false)
-	tw.tween_callback(queue_free)
+	tw.tween_callback(queue_free)	

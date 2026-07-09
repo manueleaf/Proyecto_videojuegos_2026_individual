@@ -1,0 +1,110 @@
+[gd_scene format=3 uid="uid://ssrrxumddcnt"]
+
+[ext_resource type="PackedScene" uid="uid://bwcnaqdf0jv41" path="res://scenes/Player.tscn" id="1_fjjk5"]
+[ext_resource type="PackedScene" uid="uid://cwssr66c0codc" path="res://scenes/MagneticWall.tscn" id="2_fjjk5"]
+
+[sub_resource type="RectangleShape2D" id="GroundShape"]
+size = Vector2(2400, 60)
+
+[sub_resource type="RectangleShape2D" id="WallShape"]
+size = Vector2(60, 800)
+
+[sub_resource type="RectangleShape2D" id="PlatformShape"]
+size = Vector2(220, 30)
+
+[node name="TestLevel" type="Node2D" unique_id=2118338464]
+
+[node name="Background" type="Polygon2D" parent="." unique_id=507234384]
+color = Color(0.13, 0.14, 0.18, 1)
+polygon = PackedVector2Array(-1200, -500, 1200, -500, 1200, 500, -1200, 500)
+
+[node name="Ground" type="StaticBody2D" parent="." unique_id=589207246]
+position = Vector2(0, 360)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=1875369890]
+shape = SubResource("GroundShape")
+
+[node name="Visual" type="Polygon2D" parent="Ground" unique_id=1965972140]
+color = Color(0.28, 0.3, 0.35, 1)
+polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, 30, -1200, 30)
+
+[node name="LeftWall" type="StaticBody2D" parent="." unique_id=1115611924]
+position = Vector2(-1170, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall" unique_id=1526620384]
+shape = SubResource("WallShape")
+
+[node name="Platform2" type="StaticBody2D" parent="LeftWall/CollisionShape2D" unique_id=369477624]
+position = Vector2(1470, 100)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall/CollisionShape2D/Platform2" unique_id=1677156701]
+shape = SubResource("PlatformShape")
+
+[node name="Visual" type="Polygon2D" parent="LeftWall/CollisionShape2D/Platform2" unique_id=727578998]
+color = Color(0.35, 0.38, 0.45, 1)
+polygon = PackedVector2Array(-110, -15, 110, -15, 110, 15, -110, 15)
+
+[node name="Visual" type="Polygon2D" parent="LeftWall" unique_id=1794715220]
+color = Color(0.28, 0.3, 0.35, 1)
+polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
+
+[node name="RightWall" type="StaticBody2D" parent="." unique_id=596630471]
+position = Vector2(1170, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall" unique_id=1016600846]
+shape = SubResource("WallShape")
+
+[node name="Visual" type="Polygon2D" parent="RightWall" unique_id=384159549]
+color = Color(0.28, 0.3, 0.35, 1)
+polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
+
+[node name="Platform1" type="StaticBody2D" parent="." unique_id=1041724256]
+position = Vector2(-400, 200)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1" unique_id=1325262596]
+shape = SubResource("PlatformShape")
+
+[node name="Visual" type="Polygon2D" parent="Platform1" unique_id=1729535799]
+color = Color(0.35, 0.38, 0.45, 1)
+polygon = PackedVector2Array(-110, -15, 110, -15, 110, 15, -110, 15)
+
+[node name="Platform3" type="StaticBody2D" parent="." unique_id=874989579]
+position = Vector2(700, 250)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3" unique_id=952728031]
+shape = SubResource("PlatformShape")
+
+[node name="Visual" type="Polygon2D" parent="Platform3" unique_id=1448081705]
+color = Color(0.35, 0.38, 0.45, 1)
+polygon = PackedVector2Array(-110, -15, 110, -15, 110, 15, -110, 15)
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1918211380]
+
+[node name="Controls" type="Label" parent="HUD" unique_id=2071395283]
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 540.0
+offset_bottom = 140.0
+theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
+text = "MAGNET-O  |  Controles
+A / D  o  Flechas  -  Mover
+Espacio / W / Up  -  Saltar
+J  -  Polaridad AZUL (Atraer caja seleccionada)
+K  -  Polaridad ROJA (Repeler todas en rango)
+Shift (mientras atraes)  -  Cambiar de caja"
+
+[node name="Player" parent="." unique_id=134175854 instance=ExtResource("1_fjjk5")]
+position = Vector2(-800, 200)
+debug_magnetism = false
+wall_dash_impulse = 500.0
+wall_repel_impulse = 550.0
+wall_repel_boost_y = -180.0
+
+[node name="MagneticWall" parent="." unique_id=702983495 instance=ExtResource("2_fjjk5")]
+position = Vector2(150, 300)
+
+[node name="MagneticWall2" parent="." unique_id=1409732822 instance=ExtResource("2_fjjk5")]
+position = Vector2(280, 250)
+
+[node name="MagneticWall3" parent="." unique_id=344863450 instance=ExtResource("2_fjjk5")]
+position = Vector2(600, 330)
