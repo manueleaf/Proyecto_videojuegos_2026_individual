@@ -1,30 +1,48 @@
 [gd_scene format=3 uid="uid://ssrrxumddcnt"]
 
 [ext_resource type="PackedScene" uid="uid://bwcnaqdf0jv41" path="res://scenes/Player.tscn" id="1_fjjk5"]
+[ext_resource type="Script" uid="uid://cr1qhhnkdpiij" path="res://scripts/test_level_magnetic_walls.gd" id="1_psm33"]
 [ext_resource type="PackedScene" uid="uid://cwssr66c0codc" path="res://scenes/MagneticWall.tscn" id="2_fjjk5"]
+[ext_resource type="PackedScene" uid="uid://cp7eulhk4s5a6" path="res://scenes/Goal.tscn" id="3_of023"]
 
 [sub_resource type="RectangleShape2D" id="GroundShape"]
 size = Vector2(2400, 60)
 
 [sub_resource type="RectangleShape2D" id="WallShape"]
-size = Vector2(60, 800)
+size = Vector2(60, 935.5)
 
 [sub_resource type="RectangleShape2D" id="PlatformShape"]
 size = Vector2(220, 30)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_psm33"]
+size = Vector2(1065, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fjjk5"]
+size = Vector2(22, 278)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_of023"]
+size = Vector2(19, 413)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5y8v4"]
+size = Vector2(120, 180)
+
 [node name="TestLevel" type="Node2D" unique_id=2118338464]
+script = ExtResource("1_psm33")
 
 [node name="Background" type="Polygon2D" parent="." unique_id=507234384]
+position = Vector2(50, -20)
 color = Color(0.13, 0.14, 0.18, 1)
-polygon = PackedVector2Array(-1200, -500, 1200, -500, 1200, 500, -1200, 500)
+polygon = PackedVector2Array(-1240, -504, 1200, -500, 1200, 500, -1234, 505)
 
 [node name="Ground" type="StaticBody2D" parent="." unique_id=589207246]
 position = Vector2(0, 360)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=1875369890]
+position = Vector2(42, 96)
 shape = SubResource("GroundShape")
 
 [node name="Visual" type="Polygon2D" parent="Ground" unique_id=1965972140]
+position = Vector2(58, 96)
 color = Color(0.28, 0.3, 0.35, 1)
 polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, 30, -1200, 30)
 
@@ -32,59 +50,60 @@ polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, 30, -1200, 30)
 position = Vector2(-1170, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall" unique_id=1526620384]
+position = Vector2(-3, -12)
 shape = SubResource("WallShape")
 
-[node name="Platform2" type="StaticBody2D" parent="LeftWall/CollisionShape2D" unique_id=369477624]
-position = Vector2(1470, 100)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall/CollisionShape2D/Platform2" unique_id=1677156701]
-shape = SubResource("PlatformShape")
-
-[node name="Visual" type="Polygon2D" parent="LeftWall/CollisionShape2D/Platform2" unique_id=727578998]
-color = Color(0.35, 0.38, 0.45, 1)
-polygon = PackedVector2Array(-110, -15, 110, -15, 110, 15, -110, 15)
-
 [node name="Visual" type="Polygon2D" parent="LeftWall" unique_id=1794715220]
+position = Vector2(-3, -7.999981)
+scale = Vector2(1, 1.2625002)
 color = Color(0.28, 0.3, 0.35, 1)
-polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
+polygon = PackedVector2Array(-30, -400, 30, -400, 29.999939, -201.51501, 29.99997, 200.57104, 30, 400, -30, 400, -30, 181.4859)
 
 [node name="RightWall" type="StaticBody2D" parent="." unique_id=596630471]
 position = Vector2(1170, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall" unique_id=1016600846]
+position = Vector2(29, -42.75)
 shape = SubResource("WallShape")
 
 [node name="Visual" type="Polygon2D" parent="RightWall" unique_id=384159549]
+position = Vector2(30, -43.5)
+scale = Vector2(1, 1.17875)
 color = Color(0.28, 0.3, 0.35, 1)
-polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
+polygon = PackedVector2Array(-30, -400, 30, -400, 30, -260.67856, 30, -79.00513, 30, 400, -30, 400, -30, -131.91217, -30, -213.51135)
 
 [node name="Platform1" type="StaticBody2D" parent="." unique_id=1041724256]
 position = Vector2(-400, 200)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1" unique_id=1325262596]
+position = Vector2(69, 124)
 shape = SubResource("PlatformShape")
 
 [node name="Visual" type="Polygon2D" parent="Platform1" unique_id=1729535799]
+position = Vector2(66, 126)
 color = Color(0.35, 0.38, 0.45, 1)
 polygon = PackedVector2Array(-110, -15, 110, -15, 110, 15, -110, 15)
 
-[node name="Platform3" type="StaticBody2D" parent="." unique_id=874989579]
-position = Vector2(700, 250)
+[node name="Platformtop" type="StaticBody2D" parent="." unique_id=1926721250]
+position = Vector2(850, 20)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3" unique_id=952728031]
-shape = SubResource("PlatformShape")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platformtop" unique_id=109601548]
+position = Vector2(-215.5, 1)
+shape = SubResource("RectangleShape2D_psm33")
 
-[node name="Visual" type="Polygon2D" parent="Platform3" unique_id=1448081705]
-color = Color(0.35, 0.38, 0.45, 1)
-polygon = PackedVector2Array(-110, -15, 110, -15, 110, 15, -110, 15)
+[node name="Visual" type="Polygon2D" parent="Platformtop" unique_id=1257422923]
+position = Vector2(-206.00002, -1.9073486e-06)
+scale = Vector2(4.794793, 0.88461536)
+color = Color(0.2837458, 0.31130016, 0.6502092, 1)
+polygon = PackedVector2Array(-112.89188, -12, 104.953575, -11.022636, 110.00003, -11, 109.4642, 14, 96.69705, 14, -1.9817505, 14.000002, -112.89191, 15.130432)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1918211380]
 
 [node name="Controls" type="Label" parent="HUD" unique_id=2071395283]
-offset_left = 16.0
-offset_top = 12.0
-offset_right = 540.0
-offset_bottom = 140.0
+offset_left = -613.0
+offset_top = -117.0
+offset_right = -89.0
+offset_bottom = 36.0
 theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
 text = "MAGNET-O  |  Controles
 A / D  o  Flechas  -  Mover
@@ -99,12 +118,55 @@ debug_magnetism = false
 wall_dash_impulse = 500.0
 wall_repel_impulse = 550.0
 wall_repel_boost_y = -180.0
+wall_action_cooldown = 0.2
 
-[node name="MagneticWall" parent="." unique_id=702983495 instance=ExtResource("2_fjjk5")]
-position = Vector2(150, 300)
+[node name="MagneticWall4" parent="." unique_id=862675747 instance=ExtResource("2_fjjk5")]
+position = Vector2(-100, 130)
 
-[node name="MagneticWall2" parent="." unique_id=1409732822 instance=ExtResource("2_fjjk5")]
-position = Vector2(280, 250)
+[node name="CollisionShape2D" parent="MagneticWall4" index="0" unique_id=228712250]
+position = Vector2(1, 66)
+shape = SubResource("RectangleShape2D_fjjk5")
 
-[node name="MagneticWall3" parent="." unique_id=344863450 instance=ExtResource("2_fjjk5")]
-position = Vector2(600, 330)
+[node name="CollisionShape2D" parent="MagneticWall4/MagnetZone" parent_id_path=PackedInt32Array(862675747, 2097234288) index="0" unique_id=1422743428]
+position = Vector2(2, 66)
+
+[node name="ColorRect" parent="MagneticWall4" index="2" unique_id=729615149]
+offset_left = -7.0
+offset_top = -69.0
+offset_right = 13.0
+offset_bottom = 210.0
+
+[node name="MagneticWall5" parent="." unique_id=1171416293 instance=ExtResource("2_fjjk5")]
+position = Vector2(100, 185)
+
+[node name="CollisionShape2D" parent="MagneticWall5" index="0" unique_id=228712250]
+position = Vector2(-12, 33)
+shape = SubResource("RectangleShape2D_of023")
+
+[node name="CollisionShape2D" parent="MagneticWall5/MagnetZone" parent_id_path=PackedInt32Array(1171416293, 2097234288) index="0" unique_id=1422743428]
+position = Vector2(-8, 107)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MagneticWall5/MagnetZone/CollisionShape2D" index="0" unique_id=391714196]
+position = Vector2(0, -176)
+shape = SubResource("RectangleShape2D_5y8v4")
+
+[node name="ColorRect" parent="MagneticWall5" index="2" unique_id=729615149]
+offset_left = -21.0
+offset_top = -171.0
+offset_right = -1.0
+offset_bottom = 237.0
+
+[node name="Goal" parent="." unique_id=786438781 instance=ExtResource("3_of023")]
+position = Vector2(658, -43)
+
+[node name="WinCanvas" type="CanvasLayer" parent="." unique_id=2086473287]
+
+[node name="winlabel" type="Label" parent="WinCanvas" unique_id=912606343]
+offset_left = 493.0
+offset_top = -130.0
+offset_right = 808.0
+offset_bottom = -107.0
+text = "¡FELICIDADES! Completaste el desafío"
+
+[editable path="MagneticWall4"]
+[editable path="MagneticWall5"]

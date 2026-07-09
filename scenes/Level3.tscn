@@ -121,3 +121,9 @@ position = Vector2(1000, 280)
 
 [node name="MagneticWall" parent="." unique_id=702983495 instance=ExtResource("11_opw0y")]
 position = Vector2(750, 180)
+
+[node name="MagneticWall2" parent="." unique_id=571784687 instance=ExtResource("11_opw0y")]
+position = Vector2(-250, 180)
+
+[node name="MagneticWall3" parent="." unique_id=467297146 instance=ExtResource("11_opw0y")]
+position = Vector2(330, 250)
