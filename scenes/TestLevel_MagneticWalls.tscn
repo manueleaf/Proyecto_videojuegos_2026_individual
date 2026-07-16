@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bwcnaqdf0jv41" path="res://scenes/Player.tscn" id="1_fjjk5"]
 [ext_resource type="Script" uid="uid://cr1qhhnkdpiij" path="res://scripts/test_level_magnetic_walls.gd" id="1_psm33"]
+[ext_resource type="Texture2D" uid="uid://bcg1otsmrxmb4" path="res://assets/sprites/bg_factory.png" id="2_c4vgo"]
 [ext_resource type="PackedScene" uid="uid://cwssr66c0codc" path="res://scenes/MagneticWall.tscn" id="2_fjjk5"]
 [ext_resource type="PackedScene" uid="uid://cp7eulhk4s5a6" path="res://scenes/Goal.tscn" id="3_of023"]
 
@@ -29,10 +30,14 @@ size = Vector2(120, 180)
 [node name="TestLevel" type="Node2D" unique_id=2118338464]
 script = ExtResource("1_psm33")
 
-[node name="Background" type="Polygon2D" parent="." unique_id=507234384]
-position = Vector2(50, -20)
-color = Color(0.13, 0.14, 0.18, 1)
-polygon = PackedVector2Array(-1240, -504, 1200, -500, 1200, 500, -1234, 505)
+[node name="Background" type="Polygon2D" parent="." unique_id=940476415]
+color = Color(0.04, 0.04, 0.06, 1)
+polygon = PackedVector2Array(-1400, -600, 1400, -600, 1400, 600, -1400, 600)
+
+[node name="BgImage" type="Sprite2D" parent="." unique_id=1932734475]
+texture_filter = 1
+position = Vector2(0, 120)
+texture = ExtResource("2_c4vgo")
 
 [node name="Ground" type="StaticBody2D" parent="." unique_id=589207246]
 position = Vector2(0, 360)
@@ -43,7 +48,7 @@ shape = SubResource("GroundShape")
 
 [node name="Visual" type="Polygon2D" parent="Ground" unique_id=1965972140]
 position = Vector2(58, 96)
-color = Color(0.28, 0.3, 0.35, 1)
+color = Color(0.2379708, 0.14623278, 0.05430174, 1)
 polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, 30, -1200, 30)
 
 [node name="LeftWall" type="StaticBody2D" parent="." unique_id=1115611924]
@@ -56,7 +61,7 @@ shape = SubResource("WallShape")
 [node name="Visual" type="Polygon2D" parent="LeftWall" unique_id=1794715220]
 position = Vector2(-3, -7.999981)
 scale = Vector2(1, 1.2625002)
-color = Color(0.28, 0.3, 0.35, 1)
+color = Color(0.0921978, 0.079866625, 0.003726349, 1)
 polygon = PackedVector2Array(-30, -400, 30, -400, 29.999939, -201.51501, 29.99997, 200.57104, 30, 400, -30, 400, -30, 181.4859)
 
 [node name="RightWall" type="StaticBody2D" parent="." unique_id=596630471]
@@ -69,7 +74,7 @@ shape = SubResource("WallShape")
 [node name="Visual" type="Polygon2D" parent="RightWall" unique_id=384159549]
 position = Vector2(30, -43.5)
 scale = Vector2(1, 1.17875)
-color = Color(0.28, 0.3, 0.35, 1)
+color = Color(0.06431217, 0.07317396, 0.090912454, 1)
 polygon = PackedVector2Array(-30, -400, 30, -400, 30, -260.67856, 30, -79.00513, 30, 400, -30, 400, -30, -131.91217, -30, -213.51135)
 
 [node name="Platform1" type="StaticBody2D" parent="." unique_id=1041724256]
@@ -81,7 +86,7 @@ shape = SubResource("PlatformShape")
 
 [node name="Visual" type="Polygon2D" parent="Platform1" unique_id=1729535799]
 position = Vector2(66, 126)
-color = Color(0.35, 0.38, 0.45, 1)
+color = Color(0, 0.46338826, 0.11241209, 1)
 polygon = PackedVector2Array(-110, -15, 110, -15, 110, 15, -110, 15)
 
 [node name="Platformtop" type="StaticBody2D" parent="." unique_id=1926721250]
@@ -94,7 +99,7 @@ shape = SubResource("RectangleShape2D_psm33")
 [node name="Visual" type="Polygon2D" parent="Platformtop" unique_id=1257422923]
 position = Vector2(-206.00002, -1.9073486e-06)
 scale = Vector2(4.794793, 0.88461536)
-color = Color(0.2837458, 0.31130016, 0.6502092, 1)
+color = Color(0.26646295, 0.17576161, 0.018405367, 1)
 polygon = PackedVector2Array(-112.89188, -12, 104.953575, -11.022636, 110.00003, -11, 109.4642, 14, 96.69705, 14, -1.9817505, 14.000002, -112.89191, 15.130432)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1918211380]
@@ -135,6 +140,7 @@ offset_left = -7.0
 offset_top = -69.0
 offset_right = 13.0
 offset_bottom = 210.0
+color = Color(0.71694547, 0, 0.37252638, 1)
 
 [node name="MagneticWall5" parent="." unique_id=1171416293 instance=ExtResource("2_fjjk5")]
 position = Vector2(100, 185)
@@ -155,6 +161,7 @@ offset_left = -21.0
 offset_top = -171.0
 offset_right = -1.0
 offset_bottom = 237.0
+color = Color(0.72382003, 0, 0.3297246, 1)
 
 [node name="Goal" parent="." unique_id=786438781 instance=ExtResource("3_of023")]
 position = Vector2(658, -43)
