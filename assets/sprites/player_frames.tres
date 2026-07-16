@@ -1,6 +1,10 @@
-[gd_resource type="SpriteFrames" load_steps=12 format=3 uid="uid://magnetoplayerframes"]
+[gd_resource type="SpriteFrames" format=3 uid="uid://bot0sggfur28e"]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/player_sheet.png" id="1_sheet"]
+[ext_resource type="Texture2D" uid="uid://basbdpoa7q8n" path="res://assets/sprites/player_sheet.png" id="1_sheet"]
+
+[sub_resource type="AtlasTexture" id="f9"]
+atlas = ExtResource("1_sheet")
+region = Rect2(288, 0, 32, 48)
 
 [sub_resource type="AtlasTexture" id="f0"]
 atlas = ExtResource("1_sheet")
@@ -9,6 +13,10 @@ region = Rect2(0, 0, 32, 48)
 [sub_resource type="AtlasTexture" id="f1"]
 atlas = ExtResource("1_sheet")
 region = Rect2(32, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="f8"]
+atlas = ExtResource("1_sheet")
+region = Rect2(256, 0, 32, 48)
 
 [sub_resource type="AtlasTexture" id="f2"]
 atlas = ExtResource("1_sheet")
@@ -34,16 +42,16 @@ region = Rect2(192, 0, 32, 48)
 atlas = ExtResource("1_sheet")
 region = Rect2(224, 0, 32, 48)
 
-[sub_resource type="AtlasTexture" id="f8"]
-atlas = ExtResource("1_sheet")
-region = Rect2(256, 0, 32, 48)
-
-[sub_resource type="AtlasTexture" id="f9"]
-atlas = ExtResource("1_sheet")
-region = Rect2(288, 0, 32, 48)
-
 [resource]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("f9")
+}],
+"loop": 0,
+"name": &"fall",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("f0")
@@ -51,9 +59,17 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("f1")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle",
 "speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("f8")
+}],
+"loop": 0,
+"name": &"jump",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -74,23 +90,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("f7")
 }],
-"loop": true,
+"loop": 1,
 "name": &"walk",
 "speed": 12.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("f8")
-}],
-"loop": false,
-"name": &"jump",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("f9")
-}],
-"loop": false,
-"name": &"fall",
-"speed": 5.0
 }]

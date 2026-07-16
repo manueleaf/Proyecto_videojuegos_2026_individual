@@ -10,8 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://drl2m1e7ma0bj" path="res://scenes/Laser.tscn" id="7_laser"]
 [ext_resource type="PackedScene" uid="uid://df5h0gw1vymvf" path="res://scenes/Collectible.tscn" id="8_gear"]
 [ext_resource type="PackedScene" uid="uid://cp7eulhk4s5a6" path="res://scenes/Goal.tscn" id="9_goal"]
-[ext_resource type="PackedScene" uid="uid://cwssr66c0codc" path="res://scenes/MagneticWall.tscn" id="11_opw0y"]
-[ext_resource type="PackedScene" path="res://scenes/Turret.tscn" id="12_turret"]
+[ext_resource type="PackedScene" uid="uid://bmlb2ccp4875h" path="res://scenes/Turret.tscn" id="12_turret"]
 
 [sub_resource type="RectangleShape2D" id="GroundShape"]
 size = Vector2(2400, 60)
@@ -120,14 +119,5 @@ position = Vector2(720, 300)
 [node name="Goal" parent="." unique_id=1851984108 instance=ExtResource("9_goal")]
 position = Vector2(1000, 280)
 
-[node name="MagneticWall" parent="." unique_id=702983495 instance=ExtResource("11_opw0y")]
-position = Vector2(750, 180)
-
-[node name="MagneticWall2" parent="." unique_id=571784687 instance=ExtResource("11_opw0y")]
-position = Vector2(-250, 180)
-
-[node name="MagneticWall3" parent="." unique_id=467297146 instance=ExtResource("11_opw0y")]
-position = Vector2(330, 250)
-
-[node name="Turret" parent="." instance=ExtResource("12_turret")]
+[node name="Turret" parent="." unique_id=300714900 instance=ExtResource("12_turret")]
 position = Vector2(650, 308)

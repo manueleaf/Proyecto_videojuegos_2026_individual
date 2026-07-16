@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://oilrjowy8c1p"]
+
+[ext_resource type="Script" uid="uid://dntekasjsd5he" path="res://scripts/Level.gd" id="1_2xrsv"]
+[ext_resource type="Texture2D" uid="uid://bcg1otsmrxmb4" path="res://assets/sprites/bg_factory.png" id="2_ylbeq"]
+[ext_resource type="PackedScene" uid="uid://daotiwp7fn81h" path="res://scenes/HUD.tscn" id="3_gduov"]
+[ext_resource type="PackedScene" uid="uid://bwcnaqdf0jv41" path="res://scenes/Player.tscn" id="4_h0lsg"]
+[ext_resource type="PackedScene" uid="uid://r7307jetm5aa" path="res://scenes/Enemy.tscn" id="8_eoiwq"]
+[ext_resource type="PackedScene" uid="uid://cp7eulhk4s5a6" path="res://scenes/Goal.tscn" id="10_mi1i5"]
+[ext_resource type="PackedScene" uid="uid://cwssr66c0codc" path="res://scenes/MagneticWall.tscn" id="11_02xm5"]
+[ext_resource type="PackedScene" uid="uid://bmlb2ccp4875h" path="res://scenes/Turret.tscn" id="12_xpb2a"]
+
+[sub_resource type="RectangleShape2D" id="GroundShape"]
+size = Vector2(2400, 60)
+
+[sub_resource type="RectangleShape2D" id="WallShape"]
+size = Vector2(60, 800)
+
+[node name="Level3" type="Node2D" unique_id=2141125625]
+script = ExtResource("1_2xrsv")
+level_index = 2
+
+[node name="Background" type="Polygon2D" parent="." unique_id=2024375292]
+color = Color(0.04, 0.04, 0.06, 1)
+polygon = PackedVector2Array(-1400, -600, 1400, -600, 1400, 600, -1400, 600)
+
+[node name="BgImage" type="Sprite2D" parent="." unique_id=572355030]
+texture_filter = 1
+position = Vector2(0, 120)
+texture = ExtResource("2_ylbeq")
+
+[node name="Ground" type="StaticBody2D" parent="." unique_id=1573436995]
+position = Vector2(0, 360)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=480603919]
+shape = SubResource("GroundShape")
+
+[node name="Visual" type="Polygon2D" parent="Ground" unique_id=1567925161]
+color = Color(0.2, 0.18, 0.16, 1)
+polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, 30, -1200, 30)
+
+[node name="Edge" type="Polygon2D" parent="Ground" unique_id=1816410212]
+color = Color(0.55, 0.42, 0.16, 1)
+polygon = PackedVector2Array(-1200, -30, 1200, -30, 1200, -26, -1200, -26)
+
+[node name="LeftWall" type="StaticBody2D" parent="." unique_id=1853678075]
+position = Vector2(-1170, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall" unique_id=1688179954]
+shape = SubResource("WallShape")
+
+[node name="Visual" type="Polygon2D" parent="LeftWall" unique_id=202098761]
+color = Color(0.18, 0.16, 0.15, 1)
+polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
+
+[node name="RightWall" type="StaticBody2D" parent="." unique_id=1766527868]
+position = Vector2(1170, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall" unique_id=1479616070]
+shape = SubResource("WallShape")
+
+[node name="Visual" type="Polygon2D" parent="RightWall" unique_id=1103443300]
+color = Color(0.18, 0.16, 0.15, 1)
+polygon = PackedVector2Array(-30, -400, 30, -400, 30, 400, -30, 400)
+
+[node name="HUD" parent="." unique_id=84143620 instance=ExtResource("3_gduov")]
+
+[node name="Player" parent="." unique_id=1161703587 instance=ExtResource("4_h0lsg")]
+position = Vector2(-1000, 240)
+wall_repel_impulse = 500.0
+wall_repel_boost_y = -200.0
+
+[node name="Goal" parent="." unique_id=1851984108 instance=ExtResource("10_mi1i5")]
+position = Vector2(1000, 280)
+
+[node name="MagneticWall" parent="." unique_id=702983495 instance=ExtResource("11_02xm5")]
+position = Vector2(-562, 321)
+
+[node name="MagneticWall2" parent="." unique_id=571784687 instance=ExtResource("11_02xm5")]
+position = Vector2(-194, 241)
+
+[node name="MagneticWall3" parent="." unique_id=467297146 instance=ExtResource("11_02xm5")]
+position = Vector2(301, 240)
+
+[node name="Turret" parent="." unique_id=1965671882 instance=ExtResource("12_xpb2a")]
+position = Vector2(16, 315)
+
+[node name="Enemy" parent="." unique_id=1078528207 instance=ExtResource("8_eoiwq")]
+position = Vector2(576, 280)
+patrol_distance = 90.0
+
+[node name="Enemy2" parent="." unique_id=1230767868 instance=ExtResource("8_eoiwq")]
+position = Vector2(-379, 280)
+patrol_distance = 90.0

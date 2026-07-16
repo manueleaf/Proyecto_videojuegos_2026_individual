@@ -11,7 +11,6 @@
 [ext_resource type="PackedScene" uid="uid://df5h0gw1vymvf" path="res://scenes/Collectible.tscn" id="8_gear"]
 [ext_resource type="PackedScene" uid="uid://cidmagneto01x" path="res://scenes/AcidPool.tscn" id="9_acid"]
 [ext_resource type="PackedScene" uid="uid://drl2m1e7ma0bj" path="res://scenes/Laser.tscn" id="10_laser"]
-[ext_resource type="PackedScene" uid="uid://cwssr66c0codc" path="res://scenes/MagneticWall.tscn" id="12_jxjwb"]
 
 [sub_resource type="RectangleShape2D" id="GroundShape"]
 size = Vector2(2400, 60)
@@ -281,6 +280,3 @@ offset_bottom = 195.0
 theme_override_colors/font_color = Color(1, 0.5, 0.4, 1)
 theme_override_font_sizes/font_size = 16
 text = "AVISO: DRON"
-
-[node name="MagneticWall" parent="." unique_id=702983495 instance=ExtResource("12_jxjwb")]
-position = Vector2(950, 180)
