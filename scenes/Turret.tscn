@@ -1,0 +1,59 @@
+[gd_scene load_steps=5 format=3 uid="uid://turretmagneto1x"]
+
+[ext_resource type="Script" path="res://scripts/Turret.gd" id="1_t"]
+
+[sub_resource type="RectangleShape2D" id="BodyShape"]
+size = Vector2(38, 32)
+
+[sub_resource type="CircleShape2D" id="DetectShape"]
+radius = 340.0
+
+[sub_resource type="RectangleShape2D" id="HitShape"]
+size = Vector2(46, 42)
+
+[node name="Turret" type="Node2D"]
+script = ExtResource("1_t")
+
+[node name="Body" type="StaticBody2D" parent="."]
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body"]
+position = Vector2(0, 4)
+shape = SubResource("BodyShape")
+
+[node name="Base" type="Polygon2D" parent="."]
+color = Color(0.26, 0.24, 0.29, 1)
+polygon = PackedVector2Array(-20, 6, 20, 6, 16, 22, -16, 22)
+
+[node name="Dome" type="Polygon2D" parent="."]
+color = Color(0.4, 0.42, 0.5, 1)
+polygon = PackedVector2Array(-16, -14, 16, -14, 20, 6, -20, 6)
+
+[node name="Cannon" type="Node2D" parent="."]
+position = Vector2(0, -6)
+
+[node name="Barrel" type="Polygon2D" parent="Cannon"]
+color = Color(0.18, 0.18, 0.22, 1)
+polygon = PackedVector2Array(0, -4, 26, -4, 26, 4, 0, 4)
+
+[node name="Eye" type="Polygon2D" parent="Cannon"]
+color = Color(1, 0.3, 0.3, 1)
+polygon = PackedVector2Array(-6, -6, 5, -6, 5, 6, -6, 6)
+
+[node name="Muzzle" type="Marker2D" parent="Cannon"]
+position = Vector2(28, 0)
+
+[node name="DetectArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectArea"]
+shape = SubResource("DetectShape")
+
+[node name="HitArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 6
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
+position = Vector2(0, 2)
+shape = SubResource("HitShape")
