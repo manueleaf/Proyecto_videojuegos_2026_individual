@@ -22,6 +22,7 @@ func _on_body_entered(body: Node) -> void:
 	_taken = true
 	Game.collect_gear()
 	Audio.play_sfx("gear")
+	Vfx.spark_burst(global_position)
 	set_deferred("monitoring", false)
 	var tw := create_tween()
 	tw.set_parallel(true)

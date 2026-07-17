@@ -52,6 +52,7 @@ func _update_state() -> void:
 	_is_pressed = new_state
 	cap.color = COLOR_ACTIVE if _is_pressed else COLOR_IDLE
 	if _is_pressed:
+		Audio.play_sfx("button")
 		pressed.emit()
 		_notify_target("on_button_pressed")
 	else:

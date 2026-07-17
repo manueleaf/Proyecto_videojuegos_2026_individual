@@ -4,13 +4,13 @@
 [ext_resource type="Texture2D" uid="uid://bcg1otsmrxmb4" path="res://assets/sprites/bg_factory.png" id="1_bg"]
 [ext_resource type="PackedScene" uid="uid://daotiwp7fn81h" path="res://scenes/HUD.tscn" id="2_hud"]
 [ext_resource type="PackedScene" uid="uid://bwcnaqdf0jv41" path="res://scenes/Player.tscn" id="3_player"]
-[ext_resource type="PackedScene" uid="uid://damagboybox01" path="res://scenes/MetalBox.tscn" id="4_box"]
+[ext_resource type="PackedScene" uid="uid://c9magboybox01" path="res://scenes/MetalBox.tscn" id="4_box"]
 [ext_resource type="PackedScene" uid="uid://btnmagneto001" path="res://scenes/Button.tscn" id="5_btn"]
 [ext_resource type="PackedScene" uid="uid://drmagneto001x" path="res://scenes/Door.tscn" id="6_door"]
 [ext_resource type="PackedScene" uid="uid://drl2m1e7ma0bj" path="res://scenes/Laser.tscn" id="7_laser"]
 [ext_resource type="PackedScene" uid="uid://df5h0gw1vymvf" path="res://scenes/Collectible.tscn" id="8_gear"]
 [ext_resource type="PackedScene" uid="uid://cp7eulhk4s5a6" path="res://scenes/Goal.tscn" id="9_goal"]
-[ext_resource type="PackedScene" uid="uid://bmlb2ccp4875h" path="res://scenes/Turret.tscn" id="12_turret"]
+[ext_resource type="PackedScene" uid="uid://turretmagneto1x" path="res://scenes/Turret.tscn" id="12_turret"]
 
 [sub_resource type="RectangleShape2D" id="GroundShape"]
 size = Vector2(2400, 60)

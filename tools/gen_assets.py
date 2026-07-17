@@ -441,6 +441,54 @@ def gen_hurt_wav():
     write_wav("hurt.wav", sig)
 
 
+def gen_victory_wav():
+    # Jingle ascendente alegre: C5 - E5 - G5 - C6 con cola de resonancia.
+    notes = [523.25, 659.25, 783.99, 1046.50]
+    step = 0.13
+    n = int(RATE * (step * len(notes) + 0.35))
+    out = np.zeros(n)
+    for i, f in enumerate(notes):
+        start = int(i * step * RATE)
+        length = int((step + 0.28) * RATE)
+        tt = np.linspace(0, length / RATE, length, endpoint=False)
+        env = np.exp(-tt * 5.0)
+        seg = (0.30 * np.sin(2 * np.pi * f * tt) + 0.10 * np.sin(2 * np.pi * 2 * f * tt)) * env
+        end = min(start + length, n)
+        out[start:end] += seg[:end - start]
+    write_wav("victory.wav", out * 0.9)
+
+
+def gen_button_wav():
+    # Click mecanico corto y grave (pisar boton).
+    dur = 0.09
+    t = np.linspace(0, dur, int(RATE * dur), endpoint=False)
+    env = np.exp(-t * 45.0)
+    click = 0.5 * np.sin(2 * np.pi * 180.0 * t) * env
+    tick = 0.25 * (np.random.rand(t.size) * 2 - 1) * np.exp(-t * 130.0)
+    write_wav("button.wav", click + tick)
+
+
+def gen_door_wav():
+    # Deslizamiento mecanico de la puerta: barrido grave ascendente.
+    dur = 0.42
+    t = np.linspace(0, dur, int(RATE * dur), endpoint=False)
+    freq = np.linspace(70, 150, t.size)
+    phase = 2 * np.pi * np.cumsum(freq) / RATE
+    env = np.sin(np.pi * t / dur) ** 0.8
+    sig = 0.32 * np.sin(phase) * env + 0.10 * np.sign(np.sin(phase * 0.5)) * env
+    write_wav("door.wav", sig)
+
+
+def gen_shoot_wav():
+    # Zap de la torreta: barrido descendente cuadrado, muy corto.
+    dur = 0.14
+    t = np.linspace(0, dur, int(RATE * dur), endpoint=False)
+    freq = np.linspace(900, 260, t.size)
+    phase = 2 * np.pi * np.cumsum(freq) / RATE
+    env = np.exp(-t * 16.0)
+    write_wav("shoot.wav", 0.30 * np.sign(np.sin(phase)) * env)
+
+
 if __name__ == "__main__":
     gen_player()
     gen_player_sheet()

@@ -9,6 +9,13 @@ extends CharacterBody2D
 @export var friction: float = 1800.0
 @export var air_control: float = 0.6
 
+# Game feel: coyote time + jump buffer
+@export var coyote_time: float = 0.12
+@export var jump_buffer_time: float = 0.12
+
+var _coyote_timer: float = 0.0
+var _jump_buffer_timer: float = 0.0
+
 # Magnetismo
 @export var magnet_force: float = 1800.0
 @export var magnet_falloff: float = 0.35  # 0 = fuerza constante, 1 = decae linealmente con distancia
@@ -82,7 +89,7 @@ func respawn(cause: String = "generic") -> void:
 
 func _physics_process(delta: float) -> void:
 	_handle_gravity(delta)
-	_handle_jump()
+	_handle_jump(delta)
 	_handle_horizontal_movement(delta)
 	_handle_polarity_input()
 	_update_target_selection()
@@ -99,10 +106,25 @@ func _handle_gravity(delta: float) -> void:
 		velocity.y += gravity * delta
 
 
-func _handle_jump() -> void:
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+func _handle_jump(delta: float) -> void:
+	# Jump buffer: recuerda el salto pulsado un instante antes de aterrizar.
+	if Input.is_action_just_pressed("jump"):
+		_jump_buffer_timer = jump_buffer_time
+	else:
+		_jump_buffer_timer -= delta
+
+	# Coyote time: permite saltar un pelo despues de salir de la plataforma.
+	if is_on_floor():
+		_coyote_timer = coyote_time
+	else:
+		_coyote_timer -= delta
+
+	if _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
 		velocity.y = jump_velocity
 		Audio.play_sfx("jump")
+		Vfx.dust(global_position + Vector2(0, 22))
+		_jump_buffer_timer = 0.0
+		_coyote_timer = 0.0
 
 
 func _handle_horizontal_movement(delta: float) -> void:

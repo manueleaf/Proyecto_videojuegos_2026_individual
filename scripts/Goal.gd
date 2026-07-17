@@ -21,3 +21,4 @@ func _on_body_entered(body: Node) -> void:
 	_triggered = true
 	reached.emit()
 	Game.notify_win()
+	Vfx.spark_burst(global_position)

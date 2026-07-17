@@ -13,6 +13,7 @@ const LEVELS := [
 	"res://scenes/Level1.tscn",
 	"res://scenes/Level2.tscn",
 	"res://scenes/Level3.tscn",
+	"res://scenes/Level4.tscn",
 ]
 const MENU_PATH := "res://scenes/MainMenu.tscn"
 
@@ -47,13 +48,13 @@ func has_save() -> bool:
 func new_game() -> void:
 	current_level = 0
 	_save()
-	get_tree().change_scene_to_file(LEVELS[0])
+	Fx.to_scene(LEVELS[0])
 
 
 func continue_game() -> void:
 	_load()
 	var i: int = clampi(current_level, 0, LEVELS.size() - 1)
-	get_tree().change_scene_to_file(LEVELS[i])
+	Fx.to_scene(LEVELS[i])
 
 
 func set_current_level(index: int) -> void:
@@ -67,9 +68,9 @@ func advance_level() -> void:
 	if nxt < LEVELS.size():
 		current_level = nxt
 		_save()
-		get_tree().change_scene_to_file(LEVELS[nxt])
+		Fx.to_scene(LEVELS[nxt])
 	else:
-		get_tree().change_scene_to_file(MENU_PATH)  # juego completado
+		Fx.to_scene(MENU_PATH)  # juego completado
 
 
 func is_last_level() -> bool:

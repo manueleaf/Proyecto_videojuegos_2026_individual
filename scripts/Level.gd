@@ -49,6 +49,7 @@ func _on_level_won() -> void:
 	if _won:
 		return
 	_won = true
+	Audio.play_sfx("victory")
 	_victory.visible = true
 	_victory_sub.visible = true
 	if Game.is_last_level():
@@ -62,10 +63,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		if _won and (event.keycode == KEY_SPACE or event.keycode == KEY_ENTER):
 			if Game.is_last_level():
-				get_tree().change_scene_to_file(CREDITS_PATH)
+				Fx.to_scene(CREDITS_PATH)
 			else:
 				Game.advance_level()
 		elif event.keycode == KEY_R:
 			get_tree().reload_current_scene()
 		elif event.keycode == KEY_ESCAPE:
-			get_tree().change_scene_to_file(MENU_PATH)
+			Fx.to_scene(MENU_PATH)

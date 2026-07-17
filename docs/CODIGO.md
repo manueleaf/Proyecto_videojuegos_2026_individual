@@ -4,10 +4,11 @@ Documento técnico de cómo está construido el juego: arquitectura, scripts,
 escenas, señales, física y cómo extenderlo. Pensado para entender o continuar el
 proyecto (y para sustentar la parte técnica del informe).
 
-- **Motor:** Godot 4.6 · **Lenguaje:** GDScript · **Render:** GL Compatibility
+- **Motor:** Godot 4.7 · **Lenguaje:** GDScript · **Render:** GL Compatibility
 - **Patrón general:** escenas pequeñas reutilizables (`Player`, `MetalBox`,
-  `Button`, `Door`, `Goal`, `Enemy`, `Collectible`, peligros) instanciadas dentro
-  de un nivel, más **3 autoloads** (singletons) para estado, audio y métricas.
+  `Button`, `Door`, `Goal`, `Enemy`, `Turret`, `MagneticWall`, `Collectible`,
+  peligros) instanciadas dentro de un nivel, más **6 autoloads** (singletons):
+  estado/progresión, audio, métricas, juice, pausa y VFX.
 
 ---
 
@@ -32,10 +33,10 @@ proyecto (y para sustentar la parte técnica del informe).
 ## Mapa del proyecto
 
 ```
-Autoloads (siempre vivos):  Game → Audio → PerfOverlay
-Escena inicial:             MainMenu.tscn ──(Jugar)──▶ Level1.tscn
-Level1 instancia:           Player, MetalBox×3, Button×3, Door×2, Enemy,
-                            Collectible×3, AcidPool, Laser, Goal + HUD + fondo
+Autoloads (siempre vivos):  Audio · PerfOverlay · Game · Fx · Pause · Vfx
+Flujo:                      MainMenu ─(Jugar)▶ Level1 ▶ Level2 ▶ Level3 ▶ Level4 ▶ Créditos
+Un nivel instancia:         Player, MetalBox, Button/Door, Enemy/Turret,
+                            MagneticWall, Collectible, AcidPool/Laser, Goal + HUD + fondo
 ```
 
 Cada objeto del juego es una **escena** (`.tscn`) con su **script** (`.gd`). El
@@ -46,13 +47,14 @@ nivel los coloca y conecta por posición y por `NodePath`/grupos/señales.
 ## Autoloads (singletons)
 
 Declarados en `project.godot → [autoload]`. Se cargan **antes** que cualquier
-escena y son accesibles globalmente por su nombre (`Game`, `Audio`, `PerfOverlay`).
+escena y son accesibles globalmente por su nombre (`Audio`, `PerfOverlay`, `Game`, `Fx`, `Pause`, `Vfx`).
 
 ### `Game` (`scripts/Game.gd`)
-Estado de la partida, desacoplado del HUD mediante **señales**:
-- Variables: `gears_collected`, `gears_total`, `deaths`.
+Estado de la partida + **progresión de niveles y guardado**, desacoplado del HUD mediante **señales**:
+- Variables: `gears_collected`, `gears_total`, `deaths`, `current_level`.
 - Señales: `gears_changed(collected, total)`, `player_died()`, `level_won()`.
-- Métodos: `reset_level(total)`, `collect_gear()`, `notify_death()`, `notify_win()`.
+- Estado por nivel: `reset_level(total)`, `collect_gear()`, `notify_death()`, `notify_win()`.
+- Progresión/guardado: `LEVELS` (los 4 niveles), `new_game()`, `continue_game()`, `set_current_level()`, `advance_level()`, `is_last_level()`, `has_save()`. El progreso se persiste con `ConfigFile` en `user://magneto_save.cfg`.
 
 Quien provoca un evento (un engranaje, un peligro, la meta) **no conoce el HUD**:
 sólo llama a `Game`, y `Level.gd` —que sí tiene el HUD— escucha las señales. Esto
@@ -60,8 +62,8 @@ mantiene los objetos simples y reutilizables.
 
 ### `Audio` (`scripts/AudioManager.gd`)
 Gestiona todo el sonido:
-- `PATHS`: diccionario nombre → ruta del `.wav` (`jump`, `magnet`, `music`,
-  `gear`, `hurt`).
+- `PATHS`: diccionario nombre → ruta del clip (`jump`, `magnet`, `music`, `gear`,
+  `hurt`, `enemy_death`, `victory`, `button`, `door`, `shoot`).
 - Un **pool de 6 `AudioStreamPlayer`** para efectos solapados (`play_sfx`).
 - Un canal de **música** (`play_music` / `stop_music`) y otro para el **zumbido
   del imán** (`set_magnet_active`).
@@ -80,6 +82,20 @@ Información técnica en ejecución (es un `CanvasLayer`):
 
 > En macOS el toggle es **`Tab`**: `F3` lo intercepta Mission Control y el acento
 > grave es tecla muerta en teclados español/latino.
+
+### `Fx` (`scripts/ui/Fx.gd`)
+Capa global de *juice*: **screen shake**, **hit-stop**, **flash** de pantalla y
+**transiciones con fundido** (`to_scene()`, usado por el flujo de niveles/menú).
+Se engancha a `Game.player_died` / `Game.level_won`.
+
+### `Pause` (`scripts/ui/PauseManager.gd`)
+Menú de **pausa** global con `Esc` (instancia `PauseMenu.tscn`): reanudar,
+reiniciar o volver al menú. No pausa en el menú ni en los créditos.
+
+### `Vfx` (`scripts/ui/Vfx.gd`)
+Efectos con `CPUParticles2D`: muerte del jugador según la causa (explosión /
+derretido en ácido / chispas), explosión de enemigos, fogonazo e impacto de la
+torreta, chispas al recoger/abrir puerta y polvo al saltar.
 
 ---
 

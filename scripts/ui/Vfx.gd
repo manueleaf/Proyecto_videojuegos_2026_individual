@@ -128,6 +128,18 @@ func spark_burst(pos: Vector2) -> void:
 	_free_later(root, 0.9)
 
 
+## Nubecilla de polvo tenue a los pies (salto / aterrizaje).
+func dust(pos: Vector2) -> void:
+	var root := _spawn(Node2D.new(), pos)
+	if root.get_parent() == null:
+		return
+	var p := _particles(SPARK, 8, Color(0.75, 0.7, 0.6, 0.55), 25.0, 85.0, -20.0, 0.4, 2.4, false)
+	p.direction = Vector2(0, -1)
+	p.spread = 65.0
+	root.add_child(p)
+	_free_later(root, 0.6)
+
+
 # ------------------------------------------------ efectos de enemigos/proyectiles
 ## Fogonazo de la torreta al disparar (en la boca del cañón, hacia `dir`).
 func muzzle_flash(pos: Vector2, dir: Vector2) -> void:

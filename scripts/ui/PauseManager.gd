@@ -48,8 +48,8 @@ func _pausable() -> bool:
 	var cur: Node = get_tree().current_scene
 	if cur == null:
 		return false
-	if cur.name == "MainMenu":
-		return false          # en el menu Esc no pausa
+	if cur.name == "MainMenu" or cur.name == "Credits":
+		return false          # en menu/creditos Esc no pausa (lo maneja su propia escena)
 	if get_tree().paused:
 		return true           # si ya esta pausado, permitir reanudar con Esc
 	return _can_pause
@@ -77,4 +77,4 @@ func _restart() -> void:
 func _to_menu() -> void:
 	get_tree().paused = false
 	_menu.close()
-	get_tree().change_scene_to_file(MENU_PATH)
+	Fx.to_scene(MENU_PATH)

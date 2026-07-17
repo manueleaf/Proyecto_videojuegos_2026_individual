@@ -33,4 +33,4 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _to_menu() -> void:
-	get_tree().change_scene_to_file(MENU_PATH)
+	Fx.to_scene(MENU_PATH)

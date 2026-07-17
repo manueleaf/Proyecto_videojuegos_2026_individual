@@ -52,6 +52,7 @@ func _shoot(dir: Vector2) -> void:
 	if b.has_method("setup"):
 		b.setup(dir * bolt_speed)
 	Vfx.muzzle_flash(muzzle.global_position, dir)   # fogonazo
+	Audio.play_sfx("shoot")
 	if debug_turret:
 		print("[TORRETA] dispara ", dir)
 

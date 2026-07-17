@@ -7,7 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://r7307jetm5aa" path="res://scenes/Enemy.tscn" id="8_eoiwq"]
 [ext_resource type="PackedScene" uid="uid://cp7eulhk4s5a6" path="res://scenes/Goal.tscn" id="10_mi1i5"]
 [ext_resource type="PackedScene" uid="uid://cwssr66c0codc" path="res://scenes/MagneticWall.tscn" id="11_02xm5"]
-[ext_resource type="PackedScene" uid="uid://bmlb2ccp4875h" path="res://scenes/Turret.tscn" id="12_xpb2a"]
+[ext_resource type="PackedScene" uid="uid://turretmagneto1x" path="res://scenes/Turret.tscn" id="12_xpb2a"]
+[ext_resource type="PackedScene" uid="uid://df5h0gw1vymvf" path="res://scenes/Collectible.tscn" id="13_gear"]
 
 [sub_resource type="RectangleShape2D" id="GroundShape"]
 size = Vector2(2400, 60)
@@ -15,9 +16,9 @@ size = Vector2(2400, 60)
 [sub_resource type="RectangleShape2D" id="WallShape"]
 size = Vector2(60, 800)
 
-[node name="Level3" type="Node2D" unique_id=2141125625]
+[node name="Level4" type="Node2D" unique_id=2141125625]
 script = ExtResource("1_2xrsv")
-level_index = 2
+level_index = 3
 
 [node name="Background" type="Polygon2D" parent="." unique_id=2024375292]
 color = Color(0.04, 0.04, 0.06, 1)
@@ -91,3 +92,19 @@ patrol_distance = 90.0
 [node name="Enemy2" parent="." unique_id=1230767868 instance=ExtResource("8_eoiwq")]
 position = Vector2(-379, 280)
 patrol_distance = 90.0
+
+[node name="Gear1" parent="." instance=ExtResource("13_gear")]
+position = Vector2(-350, 300)
+
+[node name="Gear2" parent="." instance=ExtResource("13_gear")]
+position = Vector2(620, 300)
+
+[node name="SignWall" type="Label" parent="."]
+offset_left = -1055.0
+offset_top = 150.0
+offset_right = -1055.0
+offset_bottom = 150.0
+theme_override_colors/font_color = Color(0.55, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "PAREDES MAGNETICAS
+En el aire: J = impulso a la pared     K = rebote"

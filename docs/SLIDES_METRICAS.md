@@ -9,7 +9,7 @@ estructura del deck y, sobre todo, **cómo capturar los números en tu máquina*
 
 ## 1. Cómo capturar las métricas
 
-El juego trae un **overlay de rendimiento**: ejecuta el juego y pulsa **F3**.
+El juego trae un **overlay de rendimiento**: ejecuta el juego y pulsa **Tab**.
 Muestra en vivo:
 
 - **FPS** — cuadros por segundo.
@@ -26,9 +26,9 @@ Muestra en vivo:
 ### Procedimiento sugerido
 1. Ejecuta el **ejecutable exportado** (no el editor) para números realistas, o
    en su defecto corre con F5 en modo *Release/Fast*.
-2. Ve a un momento representativo: **Sala 2 del Nivel 1** (enemigo + 3 cajas +
-   2 botones + cámara en movimiento). Es la escena con más carga.
-3. Pulsa **F3** y observa ~30 segundos jugando normal.
+2. Ve a un momento representativo: **Level4** (paredes magnéticas + torreta +
+   2 drones + partículas) o la sala más cargada de Level1. Es donde hay más carga.
+3. Pulsa **Tab** y observa ~30 segundos jugando normal.
 4. Anota **mínimo / promedio / máximo** de FPS y frame-time.
 5. Toma una **captura de pantalla** con el overlay visible (sirve como evidencia
    en el slide).
@@ -54,22 +54,24 @@ Muestra en vivo:
 - 1 frase de "fantasía de jugador".
 
 ### Slide 3 — Mecánicas implementadas
-- Movimiento de plataforma (acel./fricción/control aéreo).
+- Movimiento de plataforma (acel./fricción/control aéreo + coyote time / jump buffer).
 - Imán dual: **atraer** (caja seleccionada) / **repeler** (todas en rango).
+- **Paredes magnéticas**: dash/rebote en el aire (foco de Level4).
 - **Botones** (pressure plates) + **puertas** con lógica AND.
-- **Enemigo** patrullero (daño por contacto, muere por caja lanzada).
-- Meta y reinicio.
+- **Enemigos**: dron volador (contacto) y **torreta** (dispara proyectiles).
+- Coleccionables (engranajes), peligros (ácido/láser), meta y reinicio.
+- **4 niveles** encadenados + créditos, con guardado y menú de pausa.
 
 ### Slide 4 — Arquitectura técnica
-- **Motor:** Godot 4.6 · **Lenguaje:** GDScript · **Render:** GL Compatibility.
+- **Motor:** Godot 4.7 · **Lenguaje:** GDScript · **Render:** GL Compatibility.
 - **Física:** 2D integrada (gravedad 980, capas World/MetalBox/Player/Enemy).
-- **Autoloads:** `Audio` (SFX + música) y `PerfOverlay` (métricas).
-- Diagrama simple de escenas: `MainMenu → Level1 → (Player, Box, Button, Door,
-  Enemy, Goal)`.
+- **Autoloads (6):** `Audio`, `PerfOverlay`, `Game` (estado/progresión/guardado),
+  `Fx` (juice/transiciones), `Pause`, `Vfx`.
+- Flujo de escenas: `MainMenu → Level1 → 2 → 3 → 4 → Créditos`.
 
 ### Slide 5 — Metodología de medición
-- Herramienta: overlay propio (F3) basado en `Performance` API.
-- Escena medida: **Sala 2 del Nivel 1**.
+- Herramienta: overlay propio (Tab) basado en `Performance` API.
+- Escena medida: **Level4** (la de mayor carga) o la sala más pesada de Level1.
 - Build: exportado (Release) / resolución 1280×720.
 - Ventana de muestreo: ~30 s de juego normal.
 
@@ -86,7 +88,7 @@ Muestra en vivo:
 | Draw calls                  |     |          |     |
 | Objetos en frame            |     |          |     |
 
-> Pega aquí la captura del overlay (F3) como evidencia.
+> Pega aquí la captura del overlay (Tab) como evidencia.
 
 ### Slide 7 — Sistema de prueba (RELLENAR)
 
@@ -97,7 +99,7 @@ Muestra en vivo:
 | RAM total         |                |
 | Sistema operativo |                |
 | Resolución        | 1280×720       |
-| Versión de Godot  | 4.6            |
+| Versión de Godot  | 4.7            |
 | Tipo de build     | Exportado / Editor |
 
 ### Slide 8 — Conclusiones y próximos pasos
@@ -113,5 +115,5 @@ Muestra en vivo:
 - [ ] Resolver **Puzzle 1** (caja sobre botón).
 - [ ] Mostrar **enemigo**: morir una vez (respawn) y luego **eliminarlo con una caja**.
 - [ ] Resolver **Puzzle 2** (dos botones) y llegar a la **meta**.
-- [ ] Pulsar **F3** y comentar las métricas en pantalla.
+- [ ] Pulsar **Tab** y comentar las métricas en pantalla.
 - [ ] Mostrar **R** (reiniciar) y **Esc** (volver al menú).

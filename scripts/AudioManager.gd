@@ -11,6 +11,10 @@ const PATHS := {
 	"gear": "res://assets/audio/gear.wav",
 	"hurt": "res://assets/audio/hurt.wav",
 	"enemy_death": "res://assets/audio/destruccion_enemigos.wav",
+	"victory": "res://assets/audio/victory.wav",
+	"button": "res://assets/audio/button.wav",
+	"door": "res://assets/audio/door.wav",
+	"shoot": "res://assets/audio/shoot.wav",
 }
 
 ## Recorte de SFX largos: algunos clips (p. ej. saltos.mp3 dura ~4.8s) traen cola
@@ -43,7 +47,8 @@ func _ready() -> void:
 	add_child(_magnet)
 
 	for key in PATHS:
-		_streams[key] = load(PATHS[key])
+		if ResourceLoader.exists(PATHS[key]):
+			_streams[key] = load(PATHS[key])
 	_make_loop(_streams.get("magnet"))
 	_make_loop(_streams.get("music"))
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://magnetoui0pause"]
 
 [ext_resource type="Script" path="res://scripts/ui/PauseMenu.gd" id="1_pause"]
-[ext_resource type="Theme" uid="uid://magnetoui0theme" path="res://assets/ui/theme.tres" id="2_theme"]
+[ext_resource type="Theme" uid="uid://diuhx7oobjb53" path="res://assets/ui/theme.tres" id="2_theme"]
 
 [node name="PauseMenu" type="CanvasLayer"]
 process_mode = 3

@@ -9,3 +9,7 @@
 
 # Basura de macOS
 .DS_Store
+
+# Cache de Python (tools/)
+__pycache__/
+*.pyc

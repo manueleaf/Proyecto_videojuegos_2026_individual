@@ -9,7 +9,7 @@ offset_right = 560.0
 offset_bottom = 40.0
 theme_override_colors/font_color = Color(0.85, 0.87, 0.92, 1)
 theme_override_font_sizes/font_size = 13
-text = "A/D o Flechas: mover   Espacio: saltar   J: atraer   K: repeler   Tab: metricas   R: reiniciar   Esc: menu"
+text = "A/D o Flechas: mover   Espacio: saltar   J: atraer   K: repeler   Shift: cambiar caja   Tab: panel tecnico   R: reiniciar   Esc: menu"
 
 [node name="GearLabel" type="Label" parent="."]
 anchor_left = 0.5

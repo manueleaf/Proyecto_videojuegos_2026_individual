@@ -30,6 +30,8 @@ func on_button_pressed() -> void:
 	_press_count += 1
 	if _press_count >= required_presses and not _is_open:
 		_open()
+		Audio.play_sfx("door")
+		Vfx.spark_burst(global_position)
 
 
 func on_button_released() -> void:
