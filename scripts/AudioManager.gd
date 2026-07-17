@@ -5,11 +5,12 @@ extends Node
 ## un canal dedicado para la música y otro para el zumbido del imán.
 
 const PATHS := {
-	"jump": "res://assets/audio/jump.wav",
+	"jump": "res://assets/audio/saltos.mp3",
 	"magnet": "res://assets/audio/magnet.wav",
-	"music": "res://assets/audio/music.wav",
+	"music": "res://assets/audio/fondo_musical.mp3",
 	"gear": "res://assets/audio/gear.wav",
 	"hurt": "res://assets/audio/hurt.wav",
+	"enemy_death": "res://assets/audio/destruccion_enemigos.wav",
 }
 
 var _sfx_pool: Array[AudioStreamPlayer] = []
@@ -42,6 +43,9 @@ func _ready() -> void:
 
 
 func _make_loop(stream) -> void:
+	if stream is AudioStreamMP3 or stream is AudioStreamOggVorbis:
+		stream.loop = true
+		return
 	if stream is AudioStreamWAV:
 		var w: AudioStreamWAV = stream
 		w.loop_mode = AudioStreamWAV.LOOP_FORWARD

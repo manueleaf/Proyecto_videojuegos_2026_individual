@@ -51,6 +51,7 @@ func _shoot(dir: Vector2) -> void:
 	b.global_position = muzzle.global_position
 	if b.has_method("setup"):
 		b.setup(dir * bolt_speed)
+	Vfx.muzzle_flash(muzzle.global_position, dir)   # fogonazo
 	if debug_turret:
 		print("[TORRETA] dispara ", dir)
 
@@ -68,6 +69,7 @@ func _on_hit(body: Node) -> void:
 
 func _die() -> void:
 	_alive = false
+	Vfx.explode_enemy(global_position)   # explosión + sonido de destrucción
 	set_physics_process(false)
 	hit_area.set_deferred("monitoring", false)
 	detect_area.set_deferred("monitoring", false)

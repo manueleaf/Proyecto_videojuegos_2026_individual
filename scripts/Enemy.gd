@@ -87,6 +87,7 @@ func _on_body_entered(body: Node) -> void:
 func _die() -> void:
 	if debug_enemy:
 		print("[DRON] Eliminado")
+	Vfx.explode_enemy(global_position)   # explosión + sonido de destrucción
 	set_physics_process(false)
 	hit_area.set_deferred("monitoring", false)
 	var tw := create_tween()

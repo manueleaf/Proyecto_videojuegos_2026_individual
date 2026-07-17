@@ -126,3 +126,57 @@ func spark_burst(pos: Vector2) -> void:
 	var root := _spawn(Node2D.new(), pos)
 	root.add_child(_particles(SPARK, 16, Color(1.0, 0.9, 0.5), 60.0, 190.0, 220.0, 0.5, 2.2, true))
 	_free_later(root, 0.9)
+
+
+# ------------------------------------------------ efectos de enemigos/proyectiles
+## Fogonazo de la torreta al disparar (en la boca del cañón, hacia `dir`).
+func muzzle_flash(pos: Vector2, dir: Vector2) -> void:
+	var root := _spawn(Node2D.new(), pos)
+	if root.get_parent() == null:
+		return
+	root.rotation = dir.angle()
+	var flash := Sprite2D.new()
+	flash.texture = SPARK
+	flash.modulate = Color(1.0, 0.85, 0.4, 0.95)
+	flash.scale = Vector2(3.5, 3.5)
+	flash.material = _additive()
+	root.add_child(flash)
+	var tw := root.create_tween()
+	tw.tween_property(flash, "scale", Vector2(5.5, 2.4), 0.12)
+	tw.parallel().tween_property(flash, "modulate:a", 0.0, 0.12)
+	var p := _particles(SPARK, 8, Color(1.0, 0.8, 0.4), 120.0, 260.0, 0.0, 0.25, 1.6, true)
+	p.direction = Vector2(1, 0)
+	p.spread = 22.0
+	root.add_child(p)
+	_free_later(root, 0.4)
+
+
+## Explosión al destruir un enemigo (dron / torreta): chispas + metralla + humo.
+func explode_enemy(pos: Vector2) -> void:
+	Audio.play_sfx("enemy_death")
+	var root := _spawn(Node2D.new(), pos)
+	if root.get_parent() == null:
+		return
+	var flash := Sprite2D.new()
+	flash.texture = SPARK
+	flash.modulate = Color(1.0, 0.6, 0.3, 0.9)
+	flash.scale = Vector2(5, 5)
+	flash.material = _additive()
+	root.add_child(flash)
+	var tw := root.create_tween()
+	tw.tween_property(flash, "scale", Vector2(10, 10), 0.22)
+	tw.parallel().tween_property(flash, "modulate:a", 0.0, 0.22)
+	root.add_child(_particles(SPARK, 20, Color(1.0, 0.75, 0.35), 90.0, 240.0, 30.0, 0.5, 3.0, true))
+	root.add_child(_particles(CHUNK, 14, Color(0.82, 0.86, 0.92), 120.0, 300.0, 620.0, 0.9, 2.0, false))
+	root.add_child(_particles(SPARK, 8, Color(0.2, 0.2, 0.24, 0.5), 20.0, 70.0, -30.0, 0.9, 5.0, false))
+	Fx.shake(7.0)
+	_free_later(root, 1.3)
+
+
+## Impacto pequeño del proyectil de la torreta al chocar.
+func bolt_impact(pos: Vector2) -> void:
+	var root := _spawn(Node2D.new(), pos)
+	if root.get_parent() == null:
+		return
+	root.add_child(_particles(SPARK, 8, Color(1.0, 0.7, 0.35), 50.0, 150.0, 120.0, 0.35, 1.6, true))
+	_free_later(root, 0.5)
