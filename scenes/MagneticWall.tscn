@@ -1,6 +1,7 @@
-[gd_scene format=3 uid="uid://cwssr66c0codc"]
+[gd_scene load_steps=5 format=3 uid="uid://cwssr66c0codc"]
 
 [ext_resource type="Script" uid="uid://bybdjm086p3bt" path="res://scripts/MagneticWall.gd" id="1_5s650"]
+[ext_resource type="Script" path="res://scripts/ui/MagneticWallFx.gd" id="2_fx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lw72v"]
 size = Vector2(200, 20)
@@ -29,3 +30,6 @@ offset_top = -10.0
 offset_right = 100.0
 offset_bottom = 11.0
 color = Color(0.24987599, 0.20235714, 1, 1)
+
+[node name="Fx" type="Node2D" parent="."]
+script = ExtResource("2_fx")

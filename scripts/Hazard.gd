@@ -8,6 +8,8 @@ class_name Hazard
 @export var blink: bool = false
 @export var on_time: float = 1.1
 @export var off_time: float = 1.0
+## Causa de muerte para los efectos (Vfx): "acid" derrite al jugador, otro = chispas.
+@export var death_cause: String = "generic"
 
 @onready var _beam: CanvasItem = get_node_or_null("Beam")
 
@@ -41,4 +43,4 @@ func _on_body_entered(body: Node) -> void:
 
 func _try_hit(body: Node) -> void:
 	if body.is_in_group("player") and body.has_method("respawn"):
-		body.respawn()
+		body.respawn(death_cause)

@@ -33,8 +33,12 @@ var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 @onready var sprite: AnimatedSprite2D = $Sprite
 @onready var core: Sprite2D = $Core
 
+## Pausa (segundos) tras morir para que se vean los efectos antes de reaparecer.
+@export var death_pause: float = 0.8
+
 var _spawn_position: Vector2
 var _affected: Array = []  # Cajas a las que se dibuja el rayo magnetico
+var _dead: bool = false
 
 
 func _ready() -> void:
@@ -42,15 +46,38 @@ func _ready() -> void:
 	_spawn_position = global_position
 
 
-func respawn() -> void:
-	## Devuelve al jugador al punto de aparición y limpia su estado magnético.
-	global_position = _spawn_position
+func respawn(cause: String = "generic") -> void:
+	## Secuencia de muerte: reproduce el efecto, congela y OCULTA al jugador un
+	## momento (para que se vean los VFX) y recién entonces reaparece en el spawn.
+	## Antes te teletransportaba al instante y no daba tiempo a ver nada.
+	if _dead:
+		return  # ya estamos en la secuencia de muerte
+	_dead = true
+
+	Vfx.play_death(cause, global_position)  # efecto EN el sitio de la muerte
+	Audio.play_sfx("hurt")
+	Game.notify_death()
+
+	# Limpia estado y congela al jugador donde murió (todavía NO lo movemos).
 	velocity = Vector2.ZERO
 	current_polarity = Polarity.NONE
 	_set_selected_box(null)
 	Audio.set_magnet_active(false)
-	Audio.play_sfx("hurt")
-	Game.notify_death()
+	set_physics_process(false)
+	sprite.visible = false
+	core.visible = false
+
+	# Pausa en tiempo real (ignora el hit-stop) mientras se ven los efectos.
+	await get_tree().create_timer(death_pause, true, false, true).timeout
+
+	# Reaparece en el punto de inicio.
+	global_position = _spawn_position
+	velocity = Vector2.ZERO
+	sprite.visible = true
+	core.visible = true
+	$Camera2D.reset_smoothing()  # que la cámara no haga un paneo lento al spawn
+	set_physics_process(true)
+	_dead = false
 
 
 func _physics_process(delta: float) -> void:

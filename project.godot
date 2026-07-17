@@ -22,6 +22,7 @@ PerfOverlay="*res://scripts/PerfOverlay.gd"
 Game="*res://scripts/Game.gd"
 Fx="*res://scripts/ui/Fx.gd"
 Pause="*res://scripts/ui/PauseManager.gd"
+Vfx="*res://scripts/ui/Vfx.gd"
 
 [display]
 
