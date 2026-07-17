@@ -13,6 +13,12 @@ const PATHS := {
 	"enemy_death": "res://assets/audio/destruccion_enemigos.wav",
 }
 
+## Recorte de SFX largos: algunos clips (p. ej. saltos.mp3 dura ~4.8s) traen cola
+## o silencio y "arrastran". Los cortamos a un golpe breve ligado a la acción.
+const MAX_SEC := {
+	"jump": 0.5,
+}
+
 var _sfx_pool: Array[AudioStreamPlayer] = []
 var _music: AudioStreamPlayer
 var _magnet: AudioStreamPlayer
@@ -29,11 +35,11 @@ func _ready() -> void:
 		_sfx_pool.append(p)
 
 	_music = AudioStreamPlayer.new()
-	_music.volume_db = -10.0
+	_music.volume_db = -16.0   # música de fondo más baja para no tapar los SFX
 	add_child(_music)
 
 	_magnet = AudioStreamPlayer.new()
-	_magnet.volume_db = -12.0
+	_magnet.volume_db = -4.0   # zumbido del imán más presente (antes quedaba tapado)
 	add_child(_magnet)
 
 	for key in PATHS:
@@ -60,16 +66,27 @@ func play_sfx(sfx_name: String, volume_db: float = 0.0) -> void:
 	var stream = _streams.get(sfx_name)
 	if stream == null:
 		return
+	# Elige un reproductor libre (o reusa el primero si todos están ocupados).
+	var player: AudioStreamPlayer = null
 	for p in _sfx_pool:
 		if not p.playing:
-			p.stream = stream
-			p.volume_db = volume_db
-			p.play()
-			return
-	# Todos ocupados: reusa el primero.
-	_sfx_pool[0].stream = stream
-	_sfx_pool[0].volume_db = volume_db
-	_sfx_pool[0].play()
+			player = p
+			break
+	if player == null:
+		player = _sfx_pool[0]
+	player.stream = stream
+	player.volume_db = volume_db
+	player.play()
+	# Recorta clips largos (p. ej. el salto) para que suenen breves y a tiempo.
+	var cap: float = MAX_SEC.get(sfx_name, 0.0)
+	if cap > 0.0:
+		_stop_after(player, stream, cap)
+
+
+func _stop_after(player: AudioStreamPlayer, stream: AudioStream, secs: float) -> void:
+	await get_tree().create_timer(secs).timeout
+	if is_instance_valid(player) and player.playing and player.stream == stream:
+		player.stop()
 
 
 func play_music() -> void:
